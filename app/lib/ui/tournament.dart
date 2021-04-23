@@ -44,6 +44,7 @@ class _Tournament extends State<Tournament> {
   var stat = "";
   List<AllRunner> alls = List();
   List<MyRunner> runners = List();
+  List _list = List();
   bool _isLoading = true;
 
   SystemInstance systemInstance = SystemInstance();
@@ -58,6 +59,8 @@ class _Tournament extends State<Tournament> {
   var img;
   var price;
   var myId;
+  var isStat;
+  var zzz;
 
 
   Future showList()async{
@@ -113,6 +116,7 @@ class _Tournament extends State<Tournament> {
               i['createDate']
           );
           alls.add(allRunner);
+
         }
       }else{
         _isLoading = false;
@@ -189,6 +193,8 @@ class _Tournament extends State<Tournament> {
     }
     print(stat);
     showList();
+    checkId();
+    checkcheck();
     return stat;
   }
   void check(){
@@ -203,29 +209,36 @@ class _Tournament extends State<Tournament> {
     }
   }
   Future checkId()async{
-    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-    var data = await http.post('${Config.API_URL}/test_run/show_run',headers: header );
-    var _data = jsonDecode(data.body);
-    var sum = _data['data'];
-    print("_data $sum");
-    for (var i in sum){
-      MyRunner myRunner = MyRunner(
-          i['rid'],
-          i['userId'],
-          i['id'],
-          i['size'],
-          i['createDate'],
-          i['status'],
-          i['imgSlip']
-      );
-      runners.add(myRunner);
+    if(stat == "Admin"){
+
+    }else{
+      Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+      var data = await http.post('${Config.API_URL}/test_run/show_run?userId=$userId',headers: header );
+      var _data = jsonDecode(data.body);
+      var sum = _data['data'];
+      print("_data $sum");
+      for (var i in sum){
+        var ggg = i['id'];
+        // MyRunner myRunner = MyRunner(
+        //     i['rid'],
+        //     i['userId'],
+        //     i['id'],
+        //     i['size'],
+        //     i['createDate'],
+        //     i['status'],
+        //     i['imgSlip'],
+        //   i['isRegister']
+        // );
+        print("ggg$ggg");
+        _list.add(ggg);
+      }
     }
     setState(() {
-
     });
-    print("myrun $runners");
-    return runners;
+    print("myrun $_list");
+    return _list;
   }
+
   Future checker()async{
     print(userId);
     print(aaid);
@@ -246,6 +259,26 @@ class _Tournament extends State<Tournament> {
 
     });
   }
+
+  Future checkcheck()async{
+    print(userId);
+    print(aaid);
+    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+    var data = await http.post('${Config.API_URL}/test_run/check?id=$aaid&userId=$userId',headers: header );
+    var _data = jsonDecode(data.body);
+    print(_data);
+    var sum = _data['status'];
+    if (sum == 1){
+      isStat = false;
+    }else{
+      isStat = true;
+    }
+    setState(() {
+
+    });
+    return isStat;
+  }
+
   Future showCustomDialogFailed(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -345,7 +378,6 @@ class _Tournament extends State<Tournament> {
         this.userId = id;
         print('id tournament ${userId}');
         getData();
-        checkId();
         // showList();
     });
 
@@ -439,7 +471,7 @@ class _Tournament extends State<Tournament> {
                       child: InkWell(
                         onTap: () => {
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => FunRun())),
+                              MaterialPageRoute(builder: (context) => Mini())),
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
@@ -473,7 +505,7 @@ class _Tournament extends State<Tournament> {
                       child: InkWell(
                         onTap: () => {
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => FunRun())),
+                              MaterialPageRoute(builder: (context) => Half())),
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
@@ -507,7 +539,7 @@ class _Tournament extends State<Tournament> {
                       child: InkWell(
                         onTap: () => {
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => FunRun())),
+                              MaterialPageRoute(builder: (context) => FullMarathon())),
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
@@ -551,10 +583,19 @@ class _Tournament extends State<Tournament> {
                               ):ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
-                                itemCount: alls.length,
+                                  itemCount: alls.length,
                                   itemBuilder: (BuildContext context, int index){
-                                    print(alls.length);
-                                    if(runners.length == 0){
+                                    print(alls[index].id);
+                                    print("rrr $_list");
+                                    for(var i = 0;i<alls.length;i++){
+                                      print(alls[i].id);
+                                      var aaa = alls[i].id;
+                                      print(_list.contains(aaa));
+                                      if(_list.contains(aaa) == true){
+
+                                      }
+                                    }
+                                    if(_list.length == 0){
                                       print('noo');
                                       return Container(
                                         margin:EdgeInsets.all(8.0),
@@ -580,7 +621,10 @@ class _Tournament extends State<Tournament> {
                                                   print(dates);
                                                   print(datee);
                                                   if(stat == "Admin"){
-                                                    showCustomDialogEdit(context);
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext context) =>
+                                                                EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
                                                   }else{
                                                     checker();
                                                     // Navigator.of(context).pop();
@@ -623,7 +667,16 @@ class _Tournament extends State<Tournament> {
                                       );
                                     }else{
                                       print("IDIDID$userId");
-                                      print("ddd${runners[index].userId}");
+                                      print("sadas$zzz");
+                                      // print("ddd${runners[index].userId}");
+                                      for(var i = 0;i<alls.length;i++){
+                                        print(alls[i].id);
+                                        var aaa = alls[i].id;
+                                        print(_list.contains(aaa));
+                                        if(_list.contains(aaa) == true){
+
+                                        }
+                                      }
                                       return Container(
                                         margin:EdgeInsets.all(8.0),
                                         child: Stack(
@@ -648,7 +701,10 @@ class _Tournament extends State<Tournament> {
                                                   print(dates);
                                                   print(datee);
                                                   if(stat == "Admin"){
-                                                    showCustomDialogEdit(context);
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext context) =>
+                                                                EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
                                                   }else{
                                                     checker();
                                                     // Navigator.of(context).pop();
@@ -686,7 +742,7 @@ class _Tournament extends State<Tournament> {
                                               ),
 
                                             ),
-                                            userId == runners[index].userId  ? Container(
+                                            _list.contains(alls[index].id) == true ? Container(
                                               width: 70,
                                               height: 30,
                                               color: Colors.blue,
@@ -891,7 +947,8 @@ class MyRunner{
   final String createDate;
   final String status;
   final String imgSlip;
+  final String isRegister;
 
-  MyRunner(this.rid, this.userId, this.id, this.size, this.createDate, this.status, this.imgSlip);
+  MyRunner(this.rid, this.userId, this.id, this.size, this.createDate, this.status, this.imgSlip,this.isRegister);
 
 }

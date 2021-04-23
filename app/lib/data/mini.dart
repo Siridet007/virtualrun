@@ -367,7 +367,10 @@ class _Mini extends State{
                       print(dates);
                       print(datee);
                       if(stat == "Admin"){
-                        showCustomDialogEdit(context);
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
                       }else{
                         check();
                         // Navigator.of(context).pop();

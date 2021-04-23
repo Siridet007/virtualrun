@@ -355,7 +355,10 @@ class _FunRun extends State {
                       print(datee);
                       print(price);
                       if(stat == "Admin"){
-                        showCustomDialogEdit(context);
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
                       }else{
                         // showCustomDialogRegis(context);
                         // Navigator.of(context).pop();

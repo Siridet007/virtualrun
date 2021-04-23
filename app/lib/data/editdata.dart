@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/config/config.dart';
+import 'package:app/data/infodata.dart';
 import 'package:app/system/SystemInstance.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
@@ -270,6 +271,26 @@ class _EditDataScreenState extends State<EditDataScreen> {
         ),
         body: ListView(
               children: <Widget>[
+                Container(
+                  alignment: FractionalOffset.topRight,
+                  padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    InfoDataScreen(aid: aid,)));
+                      },
+                      child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Icon(Icons.person),
+                          Text("รายชื่อผู้สมัคร",style: TextStyle(color: Colors.blue),),
+
+                        ],
+                      ),
+                    ),
+                  ),
                 Container(
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Text('ชื่อรายการวิ่ง',style: TextStyle(color: Colors.black),),
