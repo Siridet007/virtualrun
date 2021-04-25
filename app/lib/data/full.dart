@@ -38,6 +38,7 @@ class _FullMarathon extends State{
   var img;
   var price;
   bool _isLoading = true;
+  List _list = List();
 
   Future _getData()async{
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
@@ -178,6 +179,7 @@ class _FullMarathon extends State{
     }
     print(stat);
     showList();
+    checkId();
     return stat;
   }
   Future showList()async{
@@ -266,6 +268,27 @@ class _FullMarathon extends State{
     }
   }
 
+  Future checkId()async{
+    if(stat == "Admin"){
+
+    }else{
+      Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+      var data = await http.post('${Config.API_URL}/test_run/show_run?userId=$userId',headers: header );
+      var _data = jsonDecode(data.body);
+      var sum = _data['data'];
+      print("_data $sum");
+      for (var i in sum){
+        var ggg = i['id'];
+        print("ggg$ggg");
+        _list.add(ggg);
+      }
+    }
+    setState(() {
+    });
+    print("myrun $_list");
+    return _list;
+  }
+
   @override
   void initState() {
     _fileUtil.readFile().then((id){
@@ -324,65 +347,75 @@ class _FullMarathon extends State{
               print('data');
               return Container(
                 margin:EdgeInsets.all(8.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                  child: InkWell(
-                    onTap: () {
-                      aaid = runs[index].id;
-                      nameAll = runs[index].nameAll;
-                      dis = runs[index].distance;
-                      type = runs[index].type;
-                      dates = runs[index].dateStart;
-                      datee = runs[index].dateEnd;
-                      img = runs[index].imgAll;
-                      price = runs[index].price;
-                      print(aaid);
-                      print(nameAll);
-                      print(dis);
-                      print(type);
-                      print(dates);
-                      print(datee);
-                      if(stat == "Admin"){
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
-                      }else{
-                        check();
-                        // Navigator.of(context).pop();
-                      }
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(
-                      //         builder: (BuildContext context) =>
-                      //             RegisterRun(aaid: aaid,)));
-                    },
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8.0),
-                            topRight: Radius.circular(8.0),
-                          ),
-                          child: FadeInImage(
-                            placeholder: AssetImage('assets/images/loading.gif'),
-                            image: NetworkImage(
-                              '${Config.API_URL}/test_all/image?imgAll=${runs[index].imgAll}',headers: {"Authorization": "Bearer ${_systemInstance.token}"},
+                child: Stack(
+                  children: [
+                    Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    child: InkWell(
+                      onTap: () {
+                        aaid = runs[index].id;
+                        nameAll = runs[index].nameAll;
+                        dis = runs[index].distance;
+                        type = runs[index].type;
+                        dates = runs[index].dateStart;
+                        datee = runs[index].dateEnd;
+                        img = runs[index].imgAll;
+                        price = runs[index].price;
+                        print(aaid);
+                        print(nameAll);
+                        print(dis);
+                        print(type);
+                        print(dates);
+                        print(datee);
+                        if(stat == "Admin"){
+                          Navigator.push(context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
+                        }else{
+                          check();
+                          // Navigator.of(context).pop();
+                        }
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(
+                        //         builder: (BuildContext context) =>
+                        //             RegisterRun(aaid: aaid,)));
+                      },
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8.0),
+                              topRight: Radius.circular(8.0),
                             ),
-                            width: 350,
-                            height: 150,
-                            fit: BoxFit.cover,
+                            child: FadeInImage(
+                              placeholder: AssetImage('assets/images/loading.gif'),
+                              image: NetworkImage(
+                                '${Config.API_URL}/test_all/image?imgAll=${runs[index].imgAll}',headers: {"Authorization": "Bearer ${_systemInstance.token}"},
+                              ),
+                              width: 350,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          title: Text("รายการ "+runs[index].nameAll +" ระยะทาง "+ runs[index].distance),
-                          subtitle: Text(' จากวันที่ ' + runs[index].dateStart + ' ถึงวันที่ '
-                              + runs[index].dateEnd),
+                          ListTile(
+                            title: Text("รายการ "+runs[index].nameAll +" ระยะทาง "+ runs[index].distance),
+                            subtitle: Text(' จากวันที่ ' + runs[index].dateStart + ' ถึงวันที่ '
+                                + runs[index].dateEnd),
 
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
+                  ),
+                    _list.contains(runs[index].id) == true ? Container(
+                      width: 70,
+                      height: 30,
+                      color: Colors.blue,
+                      child: Text("สมัครแล้ว",style: TextStyle(color: Colors.white),textAlign: TextAlign.center,),
+                    ):Padding(padding: EdgeInsets.zero,)
+              ],
                 ),
               );
             }
