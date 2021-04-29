@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Google Maps Demo',
       //home: Login(),
       home: First(),
+      routes: {'/Launcher': (BuildContext context) => Launcher()},
     );
   }
 }

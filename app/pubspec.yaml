@@ -34,7 +34,6 @@ dependencies:
   geolocator:
   font_awesome_flutter: 8.8.1
   latlong: 0.6.1
-#  flutter_session:
   path_provider: ^2.0.1
   dropdown_formfield: 0.1.3
   percent_indicator: 2.1.7+4

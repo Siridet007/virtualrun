@@ -1,23 +1,18 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+
+import 'package:app/config/config.dart';
+import 'package:app/system/SystemInstance.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdownfield/dropdownfield.dart';
-import 'package:duration/duration.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:app/config/config.dart';
-import 'package:app/system/SystemInstance.dart';
-import 'package:app/util/file_util.dart';
-import 'package:http/http.dart'as http;
-import 'dart:convert';
-import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
-
 
 class AddTournament extends StatefulWidget {
   @override
@@ -25,7 +20,6 @@ class AddTournament extends StatefulWidget {
     // TODO: implement createState
     return _AddTournament();
   }
-
 }
 
 class _AddTournament extends State<AddTournament> {
@@ -49,7 +43,6 @@ class _AddTournament extends State<AddTournament> {
   TextEditingController price = TextEditingController();
   Dialog dialog = new Dialog();
 
-
   // defaultImage() async {
   //   _f = await getImageFileFromAssets('NoImage.png');
   // }
@@ -61,39 +54,37 @@ class _AddTournament extends State<AddTournament> {
   //   return file;
   // }
 
-  Future getImage() async{
-    pickedFile = await picker.getImage(
-        source: ImageSource.gallery,
-        imageQuality: 50);
+  Future getImage() async {
+    pickedFile =
+        await picker.getImage(source: ImageSource.gallery, imageQuality: 50);
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       }
     });
   }
+
   Future showCustomDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: Text('บันทึกสำเร็จ'),
-        actions: [
-          FlatButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('ปิด'),
-          )
-        ],
-      )
-  );
+            content: Text('บันทึกสำเร็จ'),
+            actions: [
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('ปิด'),
+              )
+            ],
+          ));
   Future showCustomDialogLoad(BuildContext context) => showDialog(
       context: context,
-      builder: (context){
-        Future.delayed(Duration(seconds: 1),(){
+      builder: (context) {
+        Future.delayed(Duration(seconds: 1), () {
           Navigator.of(context).pop(true);
         });
         return AlertDialog(
-            content: Text('รอสักครู่'),
+          content: Text('รอสักครู่'),
         );
-      }
-  );
+      });
 
   void add() {
     print(userId);
@@ -106,60 +97,65 @@ class _AddTournament extends State<AddTournament> {
     params["dateEnd"] = myEndDate;
     params["userId"] = userId.toString();
     params["price"] = price.text;
-    params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(), filename: "filename.png");
+    params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(),
+        filename: "filename.png");
     FormData formData = FormData.fromMap(params);
     // Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
     dio.options.headers["Authorization"] = "Bearer ${_systemInstance.token}";
-    print("adsad${dio.options.headers["Authorization"] = "Bearer ${_systemInstance.token}"}");
-    dio.post('${Config.API_URL}/test_all/update',data: formData).then((res) async {
+    print(
+        "adsad${dio.options.headers["Authorization"] = "Bearer ${_systemInstance.token}"}");
+    dio.post('${Config.API_URL}/test_all/update', data: formData).then((res) {
       Map resMap = jsonDecode(res.toString()) as Map;
       // SystemInstance systemInstance = SystemInstance();
       // systemInstance.aid = resMap["aid"];
       // _fileUtil.writeFile(systemInstance.aid);
       var data = resMap['status'];
-      if(data == 1){
+      if (data == 1) {
         Navigator.pop(context);
         showCustomDialog(context);
         setState(() {});
-      }else{
-        CoolAlert.show(context: context, type: CoolAlertType.error, text: 'ทำรายการไม่สำเร็จ');
+      } else {
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: 'ทำรายการไม่สำเร็จ');
       }
-
     });
   }
 
-  Future<Null> _selectDate(BuildContext context) async{
+  Future<Null> _selectDate(BuildContext context) async {
     final DateTime picker = await showDatePicker(
       context: context,
       initialDate: _date,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
-    if( picker!= null){
+    if (picker != null) {
       print('Date:${_date.toString()}');
       setState(() {
         _date = picker;
         myDate = ("${_date.day}/${_date.month}/${_date.year}");
       });
-    }else{
+    } else {
       print("null");
       DateTime defDate = new DateTime.now();
       myDate = ("${defDate.day}/${defDate.month}/${defDate.year}");
     }
   }
-  Future<Null> _selectEndDate(BuildContext context)async{
-    final DateTime picked  = await showDatePicker(
+
+  Future<Null> _selectEndDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
       context: context,
       initialDate: _dateTime,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
-    if(picked!=null){
+    if (picked != null) {
       setState(() {
         _dateTime = picked;
         myEndDate = ("${_dateTime.day}/${_dateTime.month}/${_dateTime.year}");
       });
-    }else{
+    } else {
       DateTime defEndDate = new DateTime.now();
       myEndDate = ("${defEndDate.day}/${defEndDate.month}/${defEndDate.year}");
     }
@@ -218,7 +214,7 @@ class _AddTournament extends State<AddTournament> {
                     itemsVisibleInDropdown: 5,
                     items: typeRun,
                     textStyle: TextStyle(color: Colors.black),
-                    onValueChanged: (value){
+                    onValueChanged: (value) {
                       setState(() {
                         dropdown = value;
                       });
@@ -229,17 +225,16 @@ class _AddTournament extends State<AddTournament> {
                 Container(
                   child: Column(
                     children: [
-                      if(dropdown == 'Fun Run')...[
+                      if (dropdown == 'Fun Run') ...[
                         funWidget(),
-                      ]else if(dropdown == 'Mini')...[
+                      ] else if (dropdown == 'Mini') ...[
                         miWidget(),
-                      ]else if(dropdown == 'Half')...[
+                      ] else if (dropdown == 'Half') ...[
                         halfWidget(),
-                      ]else if(dropdown == 'Full')...[
+                      ] else if (dropdown == 'Full') ...[
                         fullWidget(),
-                      ]else...[
-
-                      ]
+                      ] else
+                        ...[]
                     ],
                   ),
                 ),
@@ -260,28 +255,42 @@ class _AddTournament extends State<AddTournament> {
                     Expanded(
                       child: Column(
                         children: [
-                          Text('เลือกวันที่เริ่มต้น',textAlign: TextAlign.center,style: TextStyle(fontSize: 15,color: Colors.black),),
+                          Text(
+                            'เลือกวันที่เริ่มต้น',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          ),
                           IconButton(
                             icon: Icon(Icons.date_range),
                             iconSize: 50,
                             color: Colors.green,
                             onPressed: () => _selectDate(context),
                           ),
-                          Text("${myDate}",style: TextStyle(color: Colors.green),),
+                          Text(
+                            "${myDate}",
+                            style: TextStyle(color: Colors.green),
+                          ),
                         ],
                       ),
                     ),
                     Expanded(
                       child: Column(
                         children: [
-                          Text('เลือกวันสิ้นสุด',textAlign: TextAlign.center,style: TextStyle(fontSize: 15,color: Colors.black),),
+                          Text(
+                            'เลือกวันสิ้นสุด',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          ),
                           IconButton(
                             icon: Icon(Icons.date_range),
                             iconSize: 50,
                             color: Colors.red,
                             onPressed: () => _selectEndDate(context),
                           ),
-                          Text("${myEndDate}",style: TextStyle(color: Colors.red),),
+                          Text(
+                            "${myEndDate}",
+                            style: TextStyle(color: Colors.red),
+                          ),
                         ],
                       ),
                     ),
@@ -292,10 +301,9 @@ class _AddTournament extends State<AddTournament> {
                   child: TextField(
                     controller: price,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'ราคาค่าสมัคร',
-                      hintText: '*0 = ไม่มีค่าสมัคร'
-                    ),
+                        border: OutlineInputBorder(),
+                        labelText: 'ราคาค่าสมัคร',
+                        hintText: '*0 = ไม่มีค่าสมัคร'),
                   ),
                 ),
 
@@ -303,20 +311,21 @@ class _AddTournament extends State<AddTournament> {
                 Container(
                   padding: const EdgeInsets.only(top: 30),
                   child: Center(
-                    child: _image == null ? Container(
-                      child: Center(
-                        child: Text('เลือกรูปภาพ'),
-                      ),
-                      color: Colors.grey[200],
-                      width: 250.0,
-                      height: 250.0,
-                    ):Image.file(_image),
+                    child: _image == null
+                        ? Container(
+                            child: Center(
+                              child: Text('เลือกรูปภาพ'),
+                            ),
+                            color: Colors.grey[200],
+                            width: 250.0,
+                            height: 250.0,
+                          )
+                        : Image.file(_image),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(100, 20, 100, 20),
                   child: Container(
-
                     child: RaisedButton.icon(
                       label: Text('เพิ่มรูปภาพ'),
                       icon: Icon(Icons.add_a_photo),
@@ -333,31 +342,27 @@ class _AddTournament extends State<AddTournament> {
                       color: Colors.blue,
                       child: Text('เพิ่ม'),
                       onPressed: () async {
-                        if(nameAll.text.isNotEmpty && dropdown != '' && kmDrop != ''){
+                        if (nameAll.text.isNotEmpty &&
+                            dropdown != '' &&
+                            kmDrop != '') {
                           print("nameAll $nameAll");
                           print("dropdown $dropdown");
                           print("kmDrop $kmDrop");
                           showCustomDialogLoad(context);
                           add();
-                        }else{
+                        } else {
                           CoolAlert.show(
                               context: context,
                               type: CoolAlertType.warning,
-                              text: 'กรุณากรอกข้อมูลให้ครบถ้วน'
-                          );
+                              text: 'กรุณากรอกข้อมูลให้ครบถ้วน');
                         }
-
                       },
-                    )
-                ),
-
+                    )),
               ],
-            )
-        )
-    );
+            )));
   }
 
-  Align funWidget(){
+  Align funWidget() {
     return Align(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
@@ -368,17 +373,16 @@ class _AddTournament extends State<AddTournament> {
             itemsVisibleInDropdown: 3,
             items: fun,
             textStyle: TextStyle(color: Colors.black),
-            onValueChanged: (value){
+            onValueChanged: (value) {
               setState(() {
                 kmDrop = value;
               });
-            }
-        ),
+            }),
       ),
     );
   }
 
-  Align miWidget(){
+  Align miWidget() {
     return Align(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
@@ -389,17 +393,16 @@ class _AddTournament extends State<AddTournament> {
             itemsVisibleInDropdown: 3,
             items: mi,
             textStyle: TextStyle(color: Colors.black),
-            onValueChanged: (value){
+            onValueChanged: (value) {
               setState(() {
                 kmDrop = value;
               });
-            }
-        ),
+            }),
       ),
     );
   }
 
-  Align halfWidget(){
+  Align halfWidget() {
     return Align(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
@@ -410,17 +413,16 @@ class _AddTournament extends State<AddTournament> {
             itemsVisibleInDropdown: 3,
             items: half,
             textStyle: TextStyle(color: Colors.black),
-            onValueChanged: (value){
+            onValueChanged: (value) {
               setState(() {
                 kmDrop = value;
               });
-            }
-        ),
+            }),
       ),
     );
   }
 
-  Align fullWidget(){
+  Align fullWidget() {
     return Align(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
@@ -431,17 +433,16 @@ class _AddTournament extends State<AddTournament> {
             itemsVisibleInDropdown: 3,
             items: full,
             textStyle: TextStyle(color: Colors.black),
-            onValueChanged: (value){
+            onValueChanged: (value) {
               setState(() {
                 kmDrop = value;
               });
-            }
-        ),
+            }),
       ),
     );
   }
-
 }
+
 String select = '';
 final typeRunSelect = TextEditingController();
 
@@ -454,11 +455,7 @@ List<String> typeRun = [
 
 String myFun = '';
 final disFun = TextEditingController();
-List<String> fun = [
-  "3",
-  "4",
-  "5"
-];
+List<String> fun = ["3", "4", "5"];
 
 String myMi = '';
 final disMi = TextEditingController();
@@ -481,27 +478,23 @@ List<String> full = [
   "42",
 ];
 
-class Dialog{
-  waiting(BuildContext context,String title,String description){
+class Dialog {
+  waiting(BuildContext context, String title, String description) {
     return showDialog(
         context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context){
-        Navigator.of(context).pop();
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          Navigator.of(context).pop();
           return AlertDialog(
             title: Text(title),
-
             content: SingleChildScrollView(
               child: ListBody(
-
                 children: [
                   Text(description),
-
                 ],
               ),
             ),
           );
-      }
-    );
+        });
   }
 }
