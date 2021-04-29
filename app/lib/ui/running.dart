@@ -1,16 +1,12 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:math';
-import 'file:///E:/virtualrun/app/lib/config/config.dart';
+
 import 'package:app/run/startrun.dart';
 import 'package:app/system/SystemInstance.dart';
-import 'file:///E:/virtualrun/app/lib/test/tracker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:flutter/material.dart';
-import 'file:///E:/virtualrun/app/lib/test/maps.dart';
-import 'package:http/http.dart' as http;
 
 class Running extends StatefulWidget {
   static const routeName = '/running';
@@ -18,8 +14,6 @@ class Running extends StatefulWidget {
   final String isType;
 
   const Running({Key key, this.idrunner, this.isType}) : super(key: key);
-
-
 
   @override
   State<StatefulWidget> createState() {
@@ -59,59 +53,59 @@ class _RunningState extends State<Running> {
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-          child: Container(
-            child: ListView(
-               children: <Widget>[
-                 SizedBox(
-                   height: 580,
-                   width: 300,
-                   child: GoogleMap(
-                     myLocationButtonEnabled: true,
-                     myLocationEnabled: true,
-                     mapType: MapType.normal,
-                     initialCameraPosition: CameraPosition(
-                       target: LatLng(lat, lng),
-                       zoom: 12,
-                     ),
+        child: Container(
+          child: ListView(
+            children: <Widget>[
+              SizedBox(
+                height: 580,
+                width: 300,
+                child: GoogleMap(
+                  myLocationButtonEnabled: true,
+                  myLocationEnabled: true,
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(lat, lng),
+                    zoom: 12,
+                  ),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                ),
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(320, 10, 10, 10),
+              //   child: FloatingActionButton.extended(
+              //       onPressed: _goTome,
+              //        label: Text(''),
+              //       icon: Icon(Icons.gps_fixed)
+              //   ),
+              // ),
 
-                     onMapCreated: (GoogleMapController controller) {
-                       _controller.complete(controller);
-                     },
-                   ),
-
-                 ),
-                  // Padding(
-                  //   padding: const EdgeInsets.fromLTRB(320, 10, 10, 10),
-                  //   child: FloatingActionButton.extended(
-                  //       onPressed: _goTome,
-                  //        label: Text(''),
-                  //       icon: Icon(Icons.gps_fixed)
-                  //   ),
-                  // ),
-
-                 Padding(
-                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                   child: Container(
-                       height: 50,
-                       child: RaisedButton(
-                         textColor: Colors.white,
-                         color: Colors.blue,
-                         child: Text('เริ่มวิ่ง'),
-                         onPressed: () {
-                           print("ID:${theId}");
-                           Navigator.push(context,
-                             MaterialPageRoute(builder: (context) => StartRun(myType: theType,startId: allRunId,)));
-                         },
-                       ),
-
-                   ),
-                 ),
-               ],
-             ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Container(
+                  height: 50,
+                  child: RaisedButton(
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    child: Text('เริ่มวิ่ง'),
+                    onPressed: () {
+                      print("ID:${theId}");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => StartRun(
+                                    myType: theType,
+                                    startId: allRunId,
+                                  )));
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-
         ),
-
+      ),
     );
   }
 
@@ -120,9 +114,7 @@ class _RunningState extends State<Running> {
     try {
       return await location.getLocation();
     } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-
-      }
+      if (e.code == 'PERMISSION_DENIED') {}
 
       lat = currentLocation.latitude;
       lng = currentLocation.longitude;
@@ -130,21 +122,16 @@ class _RunningState extends State<Running> {
     }
   }
 
-
   Future _goTome() async {
     final GoogleMapController controller = await _controller.future;
     currentLocation = await getCurrentLocation();
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        target: LatLng(
-            currentLocation.latitude,
-            currentLocation.longitude
-
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(currentLocation.latitude, currentLocation.longitude),
+          zoom: 18,
         ),
-        zoom: 18,
-
       ),
-    ),
     );
   }
 
@@ -170,4 +157,3 @@ class _RunningState extends State<Running> {
     return totalDistance;
   }
 }
-

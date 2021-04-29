@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:app/config/config.dart';
 import 'package:app/system/SystemInstance.dart';
-import 'file:///E:/virtualrun/app/lib/ui/rundata/infodata/datauser.dart';
+import 'package:app/ui/rundata/infodata/datauser.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -40,10 +40,14 @@ class _DataFunState extends State<DataFun> {
   List<String> theList = List();
   bool _isLoading = true;
 
-  Future get()async{
-    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-    var data = await http.post('${Config.API_URL}/ranking/show_type?type=Fun Run',headers: header);
-    if(data.statusCode == 200) {
+  Future get() async {
+    Map<String, String> header = {
+      "Authorization": "Bearer ${_systemInstance.token}"
+    };
+    var data = await http.post(
+        '${Config.API_URL}/ranking/show_type?type=Fun Run',
+        headers: header);
+    if (data.statusCode == 200) {
       _isLoading = false;
       var _data = jsonDecode(data.body);
       var sum = _data['data'];
@@ -51,16 +55,8 @@ class _DataFunState extends State<DataFun> {
       print("sum: $sum");
       for (var i in sum) {
         print(i);
-        MyGetData myGetData = MyGetData(
-            i['rankingId'],
-            i['userId'],
-            i['name'],
-            i['nameAll'],
-            i['km'],
-            i['time'],
-            i['type'],
-            i['imgRanking']
-        );
+        MyGetData myGetData = MyGetData(i['rankingId'], i['userId'], i['name'],
+            i['nameAll'], i['km'], i['time'], i['type'], i['imgRanking']);
         print(myGetData);
         myList.add(myGetData);
         print(myList);
@@ -68,16 +64,12 @@ class _DataFunState extends State<DataFun> {
       // var len = (sum.length).toString();
       // print(len);
       // int le = int.parse(len);
-      setState(() {
-
-      });
+      setState(() {});
       print(myList);
       return myList;
-    }else{
+    } else {
       _isLoading = false;
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -187,23 +179,20 @@ class _DataFunState extends State<DataFun> {
   //   return _list;
   // }
 
-  Future getData()async{
-    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-    var data = await http.post('${Config.API_URL}/user_profile/show?userId=$userId',headers: header );
+  Future getData() async {
+    Map<String, String> header = {
+      "Authorization": "Bearer ${_systemInstance.token}"
+    };
+    var data = await http.post(
+        '${Config.API_URL}/user_profile/show?userId=$userId',
+        headers: header);
     var _data = jsonDecode(data.body);
     print(_data);
     var sum = _data['data'];
-    for(var i in sum){
+    for (var i in sum) {
       print(i);
-      ProfileData(
-          i['userId'],
-          i['userName'],
-          i['passWord'],
-          i['au'],
-          i['name'],
-          i['tel'],
-          i['imgProfile']
-      );
+      ProfileData(i['userId'], i['userName'], i['passWord'], i['au'], i['name'],
+          i['tel'], i['imgProfile']);
       stat = i['au'];
     }
     print(stat);
@@ -232,9 +221,7 @@ class _DataFunState extends State<DataFun> {
     userId = systemInstance.userId;
     getData();
     get();
-    setState(() {
-
-    });
+    setState(() {});
     super.initState();
   }
 
@@ -242,61 +229,78 @@ class _DataFunState extends State<DataFun> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          child: _isLoading ? Center(
-            child: Padding(
-              padding: EdgeInsets.zero,
-              child: Loading(
-                indicator: BallPulseIndicator(),
-                size: 100.0,color: Colors.pink,
-              ),
-            ),
-          ):
-          ListView.builder(
-            // itemBuilder: getItem ,
-              itemCount: myList.length,
-              itemBuilder: (BuildContext context, int index) {
-                print("hehhe${myList[index].imgRanking}");
-                return Column(
-                  children: [
-                    Card(
-                      child: InkWell(
-                        child: ListTile(
-                          leading: Container(
-                            height: 50.0,
-                            width: 50.0,
-                            child: myList[index].imgRanking == null ? Image.asset(
-                              'assets/images/nonprofile.png',
-                              height: 150,
-                              fit:BoxFit.cover,
-                            ):FadeInImage(
-                              placeholder: AssetImage('assets/images/loading.gif'),
-                              image: NetworkImage(
-                                '${Config.API_URL}/user_profile/image?imgProfile=${myList[index].imgRanking}',headers: {"Authorization": "Bearer ${_systemInstance.token}"},
+          child: _isLoading
+              ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: Loading(
+                      indicator: BallPulseIndicator(),
+                      size: 100.0,
+                      color: Colors.pink,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  // itemBuilder: getItem ,
+                  itemCount: myList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    print("hehhe${myList[index].imgRanking}");
+                    return Column(
+                      children: [
+                        Card(
+                          child: InkWell(
+                            child: ListTile(
+                              leading: Container(
+                                height: 50.0,
+                                width: 50.0,
+                                child: myList[index].imgRanking == null
+                                    ? Image.asset(
+                                        'assets/images/nonprofile.png',
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : FadeInImage(
+                                        placeholder: AssetImage(
+                                            'assets/images/loading.gif'),
+                                        image: NetworkImage(
+                                          '${Config.API_URL}/user_profile/image?imgProfile=${myList[index].imgRanking}',
+                                          headers: {
+                                            "Authorization":
+                                                "Bearer ${_systemInstance.token}"
+                                          },
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
-                              fit: BoxFit.cover,
+                              title: Text(myList[index].name),
+                              subtitle: Text('จากรายการ ' +
+                                  myList[index].nameAll +
+                                  '\nเวลาที่ทำได้ ' +
+                                  myList[index].time),
+                              onTap: () {
+                                if (stat == 'Admin') {
+                                  print("yes");
+                                  var user = myList[index].userId;
+                                  print("user$user");
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DataUserScreen(
+                                                userId: user,
+                                              )));
+                                }
+                              },
                             ),
                           ),
-                          title: Text(myList[index].name),
-                          subtitle: Text('จากรายการ ' +myList[index].nameAll + '\nเวลาที่ทำได้ ' + myList[index].time),
-                          onTap: (){
-                            if(stat == 'Admin'){
-                              print("yes");
-                              var user = myList[index].userId;
-                              print("user$user");
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => DataUserScreen(userId: user,)));
-                            }
-                          },
                         ),
-                      ),
-                    ),
-                  ],
-                );
-              })
-      ),
+                      ],
+                    );
+                  })),
     );
-      }
-    }
-class TotalData{
+  }
+}
+
+class TotalData {
   final int successId;
   final int userId;
   final int id;
@@ -304,10 +308,11 @@ class TotalData{
   final String time;
   final String type;
 
-  TotalData(this.successId, this.userId, this.id, this.km, this.time, this.type);
+  TotalData(
+      this.successId, this.userId, this.id, this.km, this.time, this.type);
 }
-class TotalMyData{
 
+class TotalMyData {
   final int tid;
   final int userId;
   final int id;
@@ -322,12 +327,23 @@ class TotalMyData{
   final String tel;
   final String imgProfile;
 
-  TotalMyData(this.tid, this.userId, this.id, this.km, this.time, this.type, this.userMyId, this.userName, this.passWord, this.au, this.name, this.tel, this.imgProfile);
-
-
-
+  TotalMyData(
+      this.tid,
+      this.userId,
+      this.id,
+      this.km,
+      this.time,
+      this.type,
+      this.userMyId,
+      this.userName,
+      this.passWord,
+      this.au,
+      this.name,
+      this.tel,
+      this.imgProfile);
 }
-class MyData{
+
+class MyData {
   final int userMyId;
   final String userName;
   final String passWord;
@@ -336,10 +352,11 @@ class MyData{
   final String tel;
   final String imgProfile;
 
-  MyData(this.userMyId, this.userName, this.passWord, this.au, this.name, this.tel, this.imgProfile);
+  MyData(this.userMyId, this.userName, this.passWord, this.au, this.name,
+      this.tel, this.imgProfile);
 }
 
-class MyGetData{
+class MyGetData {
   final int rankingId;
   final int userId;
   final String name;
@@ -349,5 +366,6 @@ class MyGetData{
   final String type;
   final String imgRanking;
 
-  MyGetData(this.rankingId, this.userId, this.name, this.nameAll, this.km, this.time, this.type, this.imgRanking);
+  MyGetData(this.rankingId, this.userId, this.name, this.nameAll, this.km,
+      this.time, this.type, this.imgRanking);
 }

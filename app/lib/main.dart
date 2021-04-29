@@ -1,13 +1,6 @@
-import 'dart:convert';
-import 'file:///E:/virtualrun/app/lib/config/config.dart';
-import 'package:app/system/SystemInstance.dart';
-import 'package:app/ui/tournament.dart';
-// import 'package:app/news.dart';
-import 'package:app/util/file_util.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+
 import 'nav/launcher.dart';
-import 'package:app/user/login.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,7 +25,6 @@ class First extends StatefulWidget {
 }
 
 class _First extends State {
-
   /*SystemInstance _systemInstance = SystemInstance();
 
   @override

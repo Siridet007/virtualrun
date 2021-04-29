@@ -1,26 +1,23 @@
-import 'dart:convert';
-
-import 'file:///E:/virtualrun/app/lib/config/config.dart';
-import 'package:http/http.dart' as http;
-class Data{
+class Data {
   String geekName;
   int userId;
 
-  String get geek_name{
+  String get geek_name {
     return geekName;
   }
-  set geek_name(String name){
+
+  set geek_name(String name) {
     this.geekName = name;
   }
-  int get user_id{
 
-
+  int get user_id {
     return userId;
   }
-  set user_id(int id){
+
+  set user_id(int id) {
     this.userId = id;
   }
- /* Future<int> test(int a) async{
+  /* Future<int> test(int a) async{
     await Future.delayed(Duration(seconds: 1));
     Map params = Map();
     await(http.post("${Config.API_URL}/user_profile/login",body: params).then((res) {
@@ -29,7 +26,7 @@ class Data{
       userId = resMap["getId"];
     }));
   }*/
-}/*
+} /*
 Future<Data> fetctData() async{
   Map params = Map();
   final res = await http.post('${Config.API_URL}/user_profile/login',body: params).then((res) {
@@ -51,10 +48,3 @@ class Data{
 
 }
 */
-
-
-
-
-
-
-
