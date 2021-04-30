@@ -62,6 +62,8 @@ class _Tournament extends State<Tournament> {
   var isStat;
   var zzz;
 
+  ScrollController _scrollController;
+
 
   Future showList()async{
     print("stat :$stat");
@@ -381,9 +383,17 @@ class _Tournament extends State<Tournament> {
         // showList();
     });
 
+    _scrollController = ScrollController();
 
     // check();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -422,503 +432,318 @@ class _Tournament extends State<Tournament> {
               }),
         ],
       ),
-      body: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 20.0),
-              height: 170,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    width: 200.0,
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                              child: InkWell(
-                                onTap: () => {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) => FunRun())),
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
-                                  children: <Widget>[
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(8.0),
-                                        topRight: Radius.circular(8.0),
+      body:  Column(
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 20.0),
+                height: 150,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    Container(
+                      width: 170.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                                child: InkWell(
+                                  onTap: () => {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) => FunRun())),
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
+                                    children: <Widget>[
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(8.0),
+                                          topRight: Radius.circular(8.0),
+                                        ),
+                                        child: Image.asset(
+                                            'assets/images/run1.jpg',
+                                            // width: 300,
+                                            height: 70,
+                                            fit:BoxFit.fill
+
+                                        ),
                                       ),
-                                      child: Image.asset(
-                                          'assets/images/run1.jpg',
-                                          // width: 300,
-                                          height: 70,
-                                          fit:BoxFit.fill
-
+                                      ListTile(
+                                        title: Text('Fun Run'),
+                                        subtitle: Text('วิ่งระยะ 3-5 กม.'),
                                       ),
-                                    ),
-                                    ListTile(
-                                      title: Text('Fun Run'),
-                                      subtitle: Text('วิ่งระยะ 3-5 กิโลเมตร เหมาะสำหรับผู้เริ่มต้นออกกำลังกาย'),
-                                    ),
-                                  ],
-                                ),
-                    ),
-                  ),
-                  ),
-                  Container(
-                    width: 200.0,
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                      child: InkWell(
-                        onTap: () => {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Mini())),
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
-                          children: <Widget>[
-                            ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8.0),
-                                topRight: Radius.circular(8.0),
-                              ),
-                              child: Image.asset(
-                                  'assets/images/run2.jpg',
-                                  // width: 300,
-                                  height: 70,
-                                  fit:BoxFit.fill
-
-                              ),
-                            ),
-                            ListTile(
-                              title: Text('Mini Marathon'),
-                              subtitle: Text('วิ่งระยะ 10-11 กิโลเมตร เหมาะสำหรับนักวิ่งเพื่อสุขภาพ'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 200.0,
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                      child: InkWell(
-                        onTap: () => {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Half())),
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
-                          children: <Widget>[
-                            ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8.0),
-                                topRight: Radius.circular(8.0),
-                              ),
-                              child: Image.asset(
-                                  'assets/images/run3.jpg',
-                                  // width: 300,
-                                  height: 70,
-                                  fit:BoxFit.fill
-
-                              ),
-                            ),
-                            ListTile(
-                              title: Text('Half Marathon'),
-                              subtitle: Text('วิ่งระยะ 20-21 กิโลเมตร เหมาะสำหรับนักวิ่งขั้นกลาง'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 200.0,
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                      child: InkWell(
-                        onTap: () => {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => FullMarathon())),
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
-                          children: <Widget>[
-                            ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8.0),
-                                topRight: Radius.circular(8.0),
-                              ),
-                              child: Image.asset(
-                                  'assets/images/run4.jpg',
-                                  // width: 300,
-                                  height: 70,
-                                  fit:BoxFit.fill
-
-                              ),
-                            ),
-                            ListTile(
-                              title: Text('Marathon'),
-                              subtitle: Text('วิ่งระยะ 42 กิโลเมตร เหมาะสำหรับนักวิ่งมืออาชีพ'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                              child: _isLoading ? Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(0),
-                                  child: Loading(
-                                    indicator: BallPulseIndicator(),
-                                    size: 100.0,
-                                    color: Colors.pink,
+                                    ],
                                   ),
+                      ),
+                    ),
+                    ),
+                    Container(
+                      width: 170.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                        child: InkWell(
+                          onTap: () => {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => Mini())),
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8.0),
+                                  topRight: Radius.circular(8.0),
                                 ),
-                              ):ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  itemCount: alls.length,
-                                  itemBuilder: (BuildContext context, int index){
-                                    print(alls[index].id);
-                                    print("rrr $_list");
-                                    for(var i = 0;i<alls.length;i++){
-                                      print(alls[i].id);
-                                      var aaa = alls[i].id;
-                                      print(_list.contains(aaa));
-                                      if(_list.contains(aaa) == true){
+                                child: Image.asset(
+                                    'assets/images/run2.jpg',
+                                    // width: 300,
+                                    height: 70,
+                                    fit:BoxFit.fill
 
-                                      }
-                                    }
-                                    if(_list.length == 0){
-                                      print('noo');
-                                      return Container(
-                                        margin:EdgeInsets.all(8.0),
-                                        child: Stack(
-                                          alignment: Alignment.topLeft,
-                                          children: [
-                                            Card(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  aaid = alls[index].id;
-                                                  nameAll = alls[index].nameAll;
-                                                  dis = alls[index].distance;
-                                                  type = alls[index].type;
-                                                  dates = alls[index].dateStart;
-                                                  datee = alls[index].dateEnd;
-                                                  img = alls[index].imgAll;
-                                                  price = alls[index].price;
-                                                  print(aaid);
-                                                  print(nameAll);
-                                                  print(dis);
-                                                  print(type);
-                                                  print(dates);
-                                                  print(datee);
-                                                  if(stat == "Admin"){
-                                                    Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                            builder: (BuildContext context) =>
-                                                                EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
-                                                  }else{
-                                                    checker();
-                                                    // Navigator.of(context).pop();
-                                                  }
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //         builder: (BuildContext context) =>
-                                                  //             RegisterRun(aaid: aaid,)));
-                                                },
-                                                child: Column(
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.only(
-                                                        topLeft: Radius.circular(8.0),
-                                                        topRight: Radius.circular(8.0),
-                                                      ),
-                                                      child: FadeInImage(
-                                                        placeholder: AssetImage('assets/images/loading.gif'),
-                                                        image: NetworkImage(
-                                                          '${Config.API_URL}/test_all/image?imgAll=${alls[index].imgAll}',headers: {"Authorization": "Bearer ${_systemInstance.token}"},
-                                                        ),
-                                                        width: 350,
-                                                        height: 150,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                    ListTile(
-                                                      title: Text("รายการ "+alls[index].nameAll +" ระยะทาง "+ alls[index].distance),
-                                                      subtitle: Text(' จากวันที่ ' + alls[index].dateStart + ' ถึงวันที่ '
-                                                          + alls[index].dateEnd),
-
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }else{
-                                      print("IDIDID$userId");
-                                      print("sadas$zzz");
-                                      // print("ddd${runners[index].userId}");
-                                      for(var i = 0;i<alls.length;i++){
-                                        print(alls[i].id);
-                                        var aaa = alls[i].id;
-                                        print(_list.contains(aaa));
-                                        if(_list.contains(aaa) == true){
-
-                                        }
-                                      }
-                                      return Container(
-                                        margin:EdgeInsets.all(8.0),
-                                        child: Stack(
-                                          alignment: Alignment.topLeft,
-                                          children: [
-                                            Card(
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  aaid = alls[index].id;
-                                                  nameAll = alls[index].nameAll;
-                                                  dis = alls[index].distance;
-                                                  type = alls[index].type;
-                                                  dates = alls[index].dateStart;
-                                                  datee = alls[index].dateEnd;
-                                                  img = alls[index].imgAll;
-                                                  price = alls[index].price;
-                                                  print(aaid);
-                                                  print(nameAll);
-                                                  print(dis);
-                                                  print(type);
-                                                  print(dates);
-                                                  print(datee);
-                                                  if(stat == "Admin"){
-                                                    Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                            builder: (BuildContext context) =>
-                                                                EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
-                                                  }else{
-                                                    checker();
-                                                    // Navigator.of(context).pop();
-                                                  }
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //         builder: (BuildContext context) =>
-                                                  //             RegisterRun(aaid: aaid,)));
-                                                },
-                                                child: Column(
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius: BorderRadius.only(
-                                                        topLeft: Radius.circular(8.0),
-                                                        topRight: Radius.circular(8.0),
-                                                      ),
-                                                      child: FadeInImage(
-                                                        placeholder: AssetImage('assets/images/loading.gif'),
-                                                        image: NetworkImage(
-                                                          '${Config.API_URL}/test_all/image?imgAll=${alls[index].imgAll}',headers: {"Authorization": "Bearer ${_systemInstance.token}"},
-                                                        ),
-                                                        width: 350,
-                                                        height: 150,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                    ListTile(
-                                                      title: Text("รายการ "+alls[index].nameAll +" ระยะทาง "+ alls[index].distance),
-                                                      subtitle: Text(' จากวันที่ ' + alls[index].dateStart + ' ถึงวันที่ '
-                                                          + alls[index].dateEnd),
-
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                            ),
-                                            _list.contains(alls[index].id) == true ? Container(
-                                              width: 70,
-                                              height: 30,
-                                              color: Colors.blue,
-                                              child: Text("สมัครแล้ว",style: TextStyle(color: Colors.white),textAlign: TextAlign.center,),
-                                            ):Padding(padding: EdgeInsets.zero,)
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  }
+                                ),
                               ),
+                              ListTile(
+                                title: Text('Mini Marathon'),
+                                subtitle: Text('วิ่งระยะ 10-11 กม.'),
+                              ),
+                            ],
                           ),
-            ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 170.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                        child: InkWell(
+                          onTap: () => {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => Half())),
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8.0),
+                                  topRight: Radius.circular(8.0),
+                                ),
+                                child: Image.asset(
+                                    'assets/images/run3.jpg',
+                                    // width: 300,
+                                    height: 70,
+                                    fit:BoxFit.fill
 
+                                ),
+                              ),
+                              ListTile(
+                                title: Text('Half Marathon'),
+                                subtitle: Text('วิ่งระยะ 20-21 กม.'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 170.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                        child: InkWell(
+                          onTap: () => {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => FullMarathon())),
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8.0),
+                                  topRight: Radius.circular(8.0),
+                                ),
+                                child: Image.asset(
+                                    'assets/images/run4.jpg',
+                                    // width: 300,
+                                    height: 70,
+                                    fit:BoxFit.fill
 
+                                ),
+                              ),
+                              ListTile(
+                                title: Text('Marathon'),
+                                subtitle: Text('วิ่งระยะ 42 กม.'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  child: _isLoading ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(0),
+                      child: Loading(
+                        indicator: BallPulseIndicator(),
+                        size: 100.0,
+                        color: Colors.pink,
+                      ),
+                    ),
+                  ):ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: alls.length,
+                      itemBuilder: (BuildContext context, int index){
+                        if(_list.length == 0){
+                          return Container(
+                            margin:EdgeInsets.all(8.0),
+                            child: Stack(
+                              alignment: Alignment.topLeft,
+                              children: [
+                                Card(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                                  child: InkWell(
+                                    onTap: () {
+                                      aaid = alls[index].id;
+                                      nameAll = alls[index].nameAll;
+                                      dis = alls[index].distance;
+                                      type = alls[index].type;
+                                      dates = alls[index].dateStart;
+                                      datee = alls[index].dateEnd;
+                                      img = alls[index].imgAll;
+                                      price = alls[index].price;
+                                      print(aaid);
+                                      print(nameAll);
+                                      print(dis);
+                                      print(type);
+                                      print(dates);
+                                      print(datee);
+                                      if(stat == "Admin"){
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (BuildContext context) =>
+                                                    EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
+                                      }else{
+                                        checker();
+                                        // Navigator.of(context).pop();
+                                      }
+                                      // Navigator.push(context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (BuildContext context) =>
+                                      //             RegisterRun(aaid: aaid,)));
+                                    },
+                                    child: Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(8.0),
+                                            topRight: Radius.circular(8.0),
+                                          ),
+                                          child: FadeInImage(
+                                            placeholder: AssetImage('assets/images/loading.gif'),
+                                            image: NetworkImage(
+                                              '${Config.API_URL}/test_all/image?imgAll=${alls[index].imgAll}',headers: {"Authorization": "Bearer ${_systemInstance.token}"},
+                                            ),
+                                            width: 350,
+                                            height: 150,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        ListTile(
+                                          title: Text("รายการ "+alls[index].nameAll +" ระยะทาง "+ alls[index].distance +"กม. (ค่าสมัคร "+alls[index].price+".-)"),
+                                          subtitle: Text(' จากวันที่ ' + alls[index].dateStart + ' ถึงวันที่ '
+                                              + alls[index].dateEnd),
 
-      // ListView(
-      //   children: <Widget>[
-      //     Container(
-      //       margin:EdgeInsets.all(8.0),
-      //       child: Card(
-      //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      //         child: InkWell(
-      //           onTap: () => {
-      //             Navigator.push(context,
-      //                 MaterialPageRoute(builder: (context) => FunRun())),
-      //           },
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.stretch,  // add this
-      //             children: <Widget>[
-      //               ClipRRect(
-      //                 borderRadius: BorderRadius.only(
-      //                   topLeft: Radius.circular(8.0),
-      //                   topRight: Radius.circular(8.0),
-      //                 ),
-      //                 child: Image.asset(
-      //                     'assets/images/run1.jpg',
-      //                     // width: 300,
-      //                     height: 150,
-      //                     fit:BoxFit.fill
-      //
-      //                 ),
-      //               ),
-      //               ListTile(
-      //                 title: Text('Fun Run'),
-      //                 subtitle: Text('วิ่งระยะ 3-5 กิโลเมตร เหมาะสำหรับผู้เริ่มต้นออกกำลังกาย'),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //     Container(
-      //       margin:EdgeInsets.all(8.0),
-      //       child: Card(
-      //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      //         child: InkWell(
-      //           onTap: () => {
-      //             Navigator.push(context,
-      //                 MaterialPageRoute(builder: (context) => Mini())),
-      //           },
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.stretch,
-      //             children: <Widget>[
-      //               ClipRRect(
-      //                 borderRadius: BorderRadius.only(
-      //                   topLeft: Radius.circular(8.0),
-      //                   topRight: Radius.circular(8.0),
-      //                 ),
-      //                 child: Image.asset(
-      //                     'assets/images/run2.jpg',
-      //                     // width: 300,
-      //                     height: 150,
-      //                     fit:BoxFit.fill
-      //
-      //                 ),
-      //               ),
-      //               ListTile(
-      //                 title: Text('Mini Marathon'),
-      //                 subtitle: Text('วิ่งระยะ 10-11 กิโลเมตร เหมาะสำหรับนักวิ่งเพื่อสุขภาพ'),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //     Container(
-      //       margin:EdgeInsets.all(8.0),
-      //       child: Card(
-      //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      //         child: InkWell(
-      //           onTap: () => {
-      //             Navigator.push(context,
-      //                 MaterialPageRoute(builder: (context) => Half())),
-      //           },
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.stretch,
-      //             children: <Widget>[
-      //               ClipRRect(
-      //                 borderRadius: BorderRadius.only(
-      //                   topLeft: Radius.circular(8.0),
-      //                   topRight: Radius.circular(8.0),
-      //                 ),
-      //                 child: Image.asset(
-      //                     'assets/images/run3.jpg',
-      //                     // width: 300,
-      //                     height: 150,
-      //                     fit:BoxFit.fill
-      //
-      //                 ),
-      //               ),
-      //               ListTile(
-      //                 title: Text('Half Marathon'),
-      //                 subtitle: Text('วิ่งระยะ 20-21 กิโลเมตร เหมาะสำหรับนักวิ่งขั้นกลาง'),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //     Container(
-      //       margin:EdgeInsets.all(8.0),
-      //       child: Card(
-      //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      //         child: InkWell(
-      //           onTap: () => {
-      //             Navigator.push(context,
-      //                 MaterialPageRoute(builder: (context) => FullMarathon())),
-      //           },
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.stretch,
-      //             children: <Widget>[
-      //               ClipRRect(
-      //                 borderRadius: BorderRadius.only(
-      //                   topLeft: Radius.circular(8.0),
-      //                   topRight: Radius.circular(8.0),
-      //                 ),
-      //                 child: Image.asset(
-      //                     'assets/images/run4.jpg',
-      //                     // width: 300,
-      //                     height: 150,
-      //                     fit:BoxFit.fill
-      //
-      //                 ),
-      //               ),
-      //               ListTile(
-      //                 title: Text('Marathon'),
-      //                 subtitle: Text('วิ่งระยะ 42 กิโลเมตร เหมาะสำหรับนักวิ่งมืออาชีพ'),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //
-      //
-      //   ],
-      // ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
 
-      // floatingActionButton:FloatingActionButton(
-      //   onPressed: (){
-      //     Navigator.push(context, MaterialPageRoute(builder: (context) => AddTournament()));
-      //   },
-      //   child: Icon(Icons.add),
-      //   backgroundColor: Colors.red,
-      // ),
-      // _isAdmin == true ?
-      // FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(context,MaterialPageRoute(builder: (context) => AddTournament()));
-      //   },
-      //   child: Icon(Icons.add),
-      //   backgroundColor: Colors.red,
-      // ):
-    // Padding(padding: EdgeInsets.zero,),
-    ]
+                                ),
+                              ],
+                            ),
+                          );
+                        }else{
+                          return Container(
+                            margin:EdgeInsets.all(8.0),
+                            child: Stack(
+                              alignment: Alignment.topLeft,
+                              children: [
+                                Card(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                                  child: InkWell(
+                                    onTap: () {
+                                      aaid = alls[index].id;
+                                      nameAll = alls[index].nameAll;
+                                      dis = alls[index].distance;
+                                      type = alls[index].type;
+                                      dates = alls[index].dateStart;
+                                      datee = alls[index].dateEnd;
+                                      img = alls[index].imgAll;
+                                      price = alls[index].price;
+                                      print(aaid);
+                                      print(nameAll);
+                                      print(dis);
+                                      print(type);
+                                      print(dates);
+                                      print(datee);
+                                      if(stat == "Admin"){
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (BuildContext context) =>
+                                                    EditDataScreen(aaid: aaid,name: nameAll,km: dis,type: type,dateE: datee,dateS: dates,img: img,price: price,)));
+                                      }else{
+                                        checker();
+                                        // Navigator.of(context).pop();
+                                      }
+                                      // Navigator.push(context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (BuildContext context) =>
+                                      //             RegisterRun(aaid: aaid,)));
+                                    },
+                                    child: Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(8.0),
+                                            topRight: Radius.circular(8.0),
+                                          ),
+                                          child: FadeInImage(
+                                            placeholder: AssetImage('assets/images/loading.gif'),
+                                            image: NetworkImage(
+                                              '${Config.API_URL}/test_all/image?imgAll=${alls[index].imgAll}',headers: {"Authorization": "Bearer ${_systemInstance.token}"},
+                                            ),
+                                            width: 350,
+                                            height: 150,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        ListTile(
+                                          title: Text("รายการ "+alls[index].nameAll +" ระยะทาง "+ alls[index].distance+" กม. (ค่าสมัคร  "+alls[index].price+".-)"),
+                                          subtitle: Text(' จากวันที่ ' + alls[index].dateStart + ' ถึงวันที่ '
+                                              + alls[index].dateEnd),
+
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                ),
+                                _list.contains(alls[index].id) == true ? Container(
+                                  width: 70,
+                                  height: 30,
+                                  color: Colors.blue,
+                                  child: Text("สมัครแล้ว",style: TextStyle(color: Colors.white),textAlign: TextAlign.center,),
+                                ):Padding(padding: EdgeInsets.zero,)
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                      ),
+                ),
+              ),
+            ]
       )
     );
   }
