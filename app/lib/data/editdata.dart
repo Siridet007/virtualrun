@@ -125,7 +125,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
   Future showCustomDialogDelete(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            content: Text('ต้องการรายการลบหรือไม่'),
+            content: Text('ต้องการลบรายการนี้หรือไม่'),
             actions: [
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -490,7 +490,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
               child: RaisedButton(
                 textColor: Colors.white,
                 color: Colors.blue,
-                child: Text('เพิ่ม'),
+                child: Text('แก้ไข'),
                 onPressed: () {
                   if (nameAll.text.isNotEmpty |
                       dropdown.isNotEmpty |

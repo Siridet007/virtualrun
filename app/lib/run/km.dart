@@ -191,7 +191,7 @@ class _KilometerScreenState extends State<KilometerScreen> {
   Future showCustomDialog(BuildContext context) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: Text('ท่านวื่งครบตามระยะทางแล้ว'),
+        content: Text('ท่านวิ่งครบตามระยะทางแล้ว'),
         actions: [
           FlatButton(
             onPressed: () => Navigator.of(context).pop(),
