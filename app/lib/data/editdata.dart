@@ -226,7 +226,6 @@ class _EditDataScreenState extends State<EditDataScreen> {
       var data = resMap['status'];
       if (data == 1) {
         Navigator.pop(context);
-        Navigator.pop(context);
         Navigator.of(context).pushReplacementNamed("/Launcher");
         // Navigator.of(context).push(
         //     MaterialPageRoute(builder: (BuildContext context) => Launcher()));

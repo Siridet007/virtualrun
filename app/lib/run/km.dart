@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app/config/config.dart';
 import 'package:app/system/SystemInstance.dart';
 import 'package:app/ui/rundata/datarunner.dart';
+import 'package:app/ui/runner.dart';
 import 'package:app/ui/running.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,8 +16,10 @@ class KilometerScreen extends StatefulWidget {
   final int id;
   final String type;
   final String km;
+  final String dateS;
+  final String dateE;
 
-  const KilometerScreen({Key key, this.id,this.type,this.km}) : super(key: key);
+  const KilometerScreen({Key key, this.id,this.type,this.km,this.dateS,this.dateE}) : super(key: key);
   @override
   _KilometerScreenState createState() => _KilometerScreenState();
 }
@@ -38,19 +41,80 @@ class _KilometerScreenState extends State<KilometerScreen> {
   var sumk = 0.0;
   var tid;
   var myKmm;
+  var myDateS;
+  var myDateE;
+  var conS;
+  var conE;
+  final _date = new DateTime.now();
+  var date2s;
+  var s2date;
+  bool _isLoading = true;
+  List<DataRun> dataRuns = [];
+  bool date = false;
 
   void initState(){
     SystemInstance systemInstance = SystemInstance();
     userId = systemInstance.userId;
     theType = widget.type;
     aid = widget.id;
+
     print("aid$aid");
+    _getDataDate();
     _getNewData();
 
     super.initState();
   }
 
 
+  Future _getDataDate()async {
+    Map<String, String> header = {
+      "Authorization": "Bearer ${_systemInstance.token}"
+    };
+    var data = await http.post(
+        '${Config.API_URL}/test_run/test_show?userId=${userId}', headers: header);
+    if (data.statusCode == 200) {
+      _isLoading = false;
+      var _data = jsonDecode(data.body);
+      var sum = _data['data'];
+      // print(_data);
+      // print(sum);
+      for (var i in sum) {
+        myDateS = i['dateStart'];
+        myDateE = i["dateEnd"];
+
+      }
+      print(myDateS);
+      print(myDateE);
+      conS = new DateFormat('dd/mm/yyyy').parse(myDateS);
+      conE = new DateFormat('dd/mm/yyyy').parse(myDateE);
+      date2s = ('${_date.day}/${_date.month}/${_date.year}');
+      s2date = new DateFormat('dd/mm/yyyy').parse(date2s);
+      print(conS);
+      print(conS);
+      print(date2s);
+      print(s2date);
+      if((s2date==conS || s2date.isAfter(conS)) && (s2date==conE || s2date.isBefore(conE))){
+        date = true;
+        setState(() {
+
+        });
+      }else{
+        date = false;
+        setState(() {
+
+        });
+      }
+      setState(() {
+
+      });
+      return dataRuns;
+    } else {
+      _isLoading = false;
+      setState(() {
+
+      });
+    }
+  }
 
   Future _getNewData() async {
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
@@ -119,6 +183,7 @@ class _KilometerScreenState extends State<KilometerScreen> {
     setState(() {
 
     });
+
     print(_list);
     return _list;
   }
@@ -136,46 +201,73 @@ class _KilometerScreenState extends State<KilometerScreen> {
       )
   );
 
+  Future showCustomDialogDate(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('ไม่ตรงตามวันเวลาที่กำหนด'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      )
+  );
+
 
   @override
   Widget build(BuildContext context) {
     distance = widget.km;
+    print('$date');
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('km'),
-        actions: [_list.isEmpty ?
-          IconButton(
-            icon: Icon(Icons.forward),
-            onPressed: (){
-              print("วิ่งใหม่");
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          Running(isType:theType,idrunner: aid,)));
-            },
-        ):IconButton(
-          icon: Icon(Icons.forward),
-          onPressed: (){
-            var theDis = double.parse(distance);
-            var myKm = double.parse(myKmm);
-            // myKm = 5;
-            print("the$theDis");
-            print("my$myKm");
-            if(myKm < theDis){
-              print("วิ่งต่อ");
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          Running(idrunner: aid,isType:theType)));
-            }else{
-              showCustomDialog(context);
-            }
-          },
-        ),
-        ],
+        actions: [
+          if(date == false)...[
+            IconButton(
+                icon: Icon(Icons.forward),
+                onPressed: (){
+                  showCustomDialogDate(context);
+                }
+            ),
+      ]else...[
+            _list.isEmpty ?
+            IconButton(
+              icon: Icon(Icons.forward),
+              onPressed: (){
+                print("วิ่งใหม่");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            Running(isType:theType,idrunner: aid,)));
+              },
+            ):IconButton(
+              icon: Icon(Icons.forward),
+              onPressed: (){
+                var theDis = double.parse(distance);
+                var myKm = double.parse(myKmm);
+                // myKm = 5;
+                print("the$theDis");
+                print("my$myKm");
+                if(myKm < theDis){
+                  print("วิ่งต่อ");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              Running(idrunner: aid,isType:theType)));
+                }else{
+                  showCustomDialog(context);
+                }
+              },
+            ),
+          ]
+
+          ],
+
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

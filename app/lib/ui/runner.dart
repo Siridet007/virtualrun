@@ -140,38 +140,12 @@ class _RunnerState extends State<Runner> {
                       dateS = dataRuns[index].dateStart;
                       dateE = dataRuns[index].dateEnd;
                       print(distance);
-                      var conS = new DateFormat('dd/mm/yyyy').parse(dateS);
-                      var conE = new DateFormat('dd/mm/yyyy').parse(dateE);
-                      print("conS $conS");
-                      print("conE $conE");
-                      var conN = new DateTime.now();
-                      var date2s = ('${_date.day}/${_date.month}/${_date.year}');
-                      var s2date = new DateFormat('dd/mm/yyyy').parse(date2s);
-                      var dateN2s = ('${conN.day}/${conN.month}/${conN.year}');
-                      var s2dateN = new DateFormat('dd/mm/yyyy').parse(dateN2s);
-                      var ds = ('29/01/2021');
-                      var de = ('31/01/2021');
-                      var ds2d = new DateFormat('dd/mm/yyyy').parse(ds);
-                      var de2d = new DateFormat('dd/mm/yyyy').parse(de);
-                      print("s2date $s2date");
-                      print("s2dateN $s2dateN");
-                      if((s2date==conS || s2date.isAfter(conS)) && (s2date==conE || s2date.isBefore(conE))){
-                        print('0');
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (BuildContext context) =>
-                        //             Running(idrunner: aaId,isType:isType)));
-                        Navigator.push(
+                      Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    KilometerScreen(id: aaId,type:isType,km:distance ,)));
-                      }else{
-                        print('1');
-                        showCustomDialog(context);
-                      }
-                      //
+                                    KilometerScreen(id: aaId,type:isType,km:distance,dateS: dateS,dateE: dateE,)));
+
                     },
                     child: Column(
                       children: [
