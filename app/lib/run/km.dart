@@ -93,7 +93,7 @@ class _KilometerScreenState extends State<KilometerScreen> {
       print(conS);
       print(date2s);
       print(s2date);
-      if((s2date==conS || s2date.isAfter(conS)) && (s2date==conE || s2date.isBefore(conE))){
+      if(s2date.isAtSameMomentAs(conS) || (s2date.isAfter(conS)) && s2date.isBefore(conE)){
         date = true;
         setState(() {
 
