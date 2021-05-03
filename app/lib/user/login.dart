@@ -66,7 +66,9 @@ class _Login extends State<Login> {
       //int loginPass = res.body.length;
       Map resMap = jsonDecode(res.body) as Map;
       print("res:$resMap");
-      sharedPreferences.setString("token", resMap['token']);
+      print("data${resMap["data"]}");
+
+
       if(resMap['data'] == 1){
         print("login success");
         Map resMap = jsonDecode(res.body) as Map;
@@ -81,11 +83,11 @@ class _Login extends State<Login> {
         Navigator.push(
                 context, MaterialPageRoute(builder: (context) => First()));
         showCustomDialogPass(context);
-      }else{
+      }else if(resMap['data'] == 0){
         showCustomDialog(context);
         print("login faild");
       }
-
+      sharedPreferences.setString("token", resMap['token']);
 
       // print(resMap);
       // int data = resMap['data'];
@@ -138,9 +140,9 @@ class _Login extends State<Login> {
       //   );
       // }
       setState(() {});
-      print(res.body);
+      print('body${res.body}');
     }).catchError((err) {
-      print(err);
+      print("err$err");
       Text('error');
     });
 //
