@@ -97,6 +97,18 @@ class _Register extends State<Register> {
         ],
       )
   );
+  Future showCustomDialogNot(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('กรุณากรอกข้อมูลให้ครบถ้วน'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      )
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +206,12 @@ class _Register extends State<Register> {
                       print(_userName.text);
                       print(_passWord.text);
                       // print(_name.text);
-                      onRegister();
+                      if(_userName.text.isNotEmpty && _passWord.text.isNotEmpty && _name.text.isNotEmpty && _tel.text.isNotEmpty){
+                        onRegister();
+                      }else{
+                        showCustomDialogNot(context);
+                      }
+
                     },
                   ),
                 ),
