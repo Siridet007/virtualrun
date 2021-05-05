@@ -57,7 +57,8 @@ class _KilometerScreenState extends State<KilometerScreen> {
     userId = systemInstance.userId;
     theType = widget.type;
     aid = widget.id;
-
+    myDateS = widget.dateS;
+    myDateE = widget.dateE;
     print("aid$aid");
     _getDataDate();
     _getNewData();
@@ -77,22 +78,25 @@ class _KilometerScreenState extends State<KilometerScreen> {
       var _data = jsonDecode(data.body);
       var sum = _data['data'];
       // print(_data);
-      // print(sum);
-      for (var i in sum) {
-        myDateS = i['dateStart'];
-        myDateE = i["dateEnd"];
+      print(sum);
 
-      }
-      print(myDateS);
-      print(myDateE);
-      conS = new DateFormat('dd/mm/yyyy').parse(myDateS);
-      conE = new DateFormat('dd/mm/yyyy').parse(myDateE);
+      print("myDateS $myDateS");
+      print("myDateE $myDateE");
+      conS = new DateFormat('d/M/yyyy').parse(myDateS);
+      conE = new DateFormat('d/M/yyyy').parse(myDateE);
       date2s = ('${_date.day}/${_date.month}/${_date.year}');
-      s2date = new DateFormat('dd/mm/yyyy').parse(date2s);
+      s2date = new DateFormat('d/M/yyyy').parse(date2s);
       print(conS);
-      print(conS);
+      print(conE);
       print(date2s);
       print(s2date);
+      print(s2date.isAtSameMomentAs(conS));
+      print((s2date.isAfter(conS)));
+      print(s2date.isBefore(conE));
+      print(date2s.compareTo(myDateS));
+      print(date2s.compareTo(myDateE));
+      print(date2s.compareTo(date2s));
+
       if(s2date.isAtSameMomentAs(conS) || (s2date.isAfter(conS)) && s2date.isBefore(conE)){
         date = true;
         setState(() {
