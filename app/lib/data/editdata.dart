@@ -174,7 +174,6 @@ class _EditDataScreenState extends State<EditDataScreen> {
     if (jsonData['status'] == 0) {
       print("remove แล้ว");
       Navigator.pop(context);
-      Navigator.pop(context);
       showCustomDialogDeleteSuccess(context);
       setState(() {});
     } else {
