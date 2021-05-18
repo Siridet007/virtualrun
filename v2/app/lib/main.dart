@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'nav/launcher.dart';
 
@@ -40,8 +41,34 @@ class _SplashScreen extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("Hello"),
-    );
+        body: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            colors: [Colors.pink, Colors.red],
+            begin: const FractionalOffset(0.5, 0.0),
+            end: const FractionalOffset(0.0, 0.5),
+            stops: [0.0, 1.0],
+            tileMode: TileMode.clamp),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            FaIcon(
+              FontAwesomeIcons.running,
+              size: 200,
+              color: Colors.white,
+            ),
+            Padding(padding: EdgeInsets.only(bottom: 20)),
+            Text(
+              'vRun',
+              style: TextStyle(color: Colors.white),
+            )
+          ],
+        ),
+      ),
+    ));
   }
 }
 //
