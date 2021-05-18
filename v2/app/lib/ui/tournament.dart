@@ -193,6 +193,7 @@ class _Tournament extends State<Tournament> {
     var _data = jsonDecode(data.body);
     print(_data);
     var sum = _data['data'];
+    print(sum);
     for (var i in sum) {
       print(i);
       ProfileData(i['userId'], i['userName'], i['passWord'], i['au'], i['name'],

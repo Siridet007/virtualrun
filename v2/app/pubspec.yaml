@@ -58,6 +58,16 @@ dependencies:
   loading:
   cool_alert:
 
+# add new package
+  flutter_signin_button:
+
+  # Warning!!!! upgrade version. There are problem.
+#  firebase_core:
+#  firebase_auth:
+
+  # Warning!!!! upgrade version. There are problem.
+  flutter_facebook_auth:
+
 dev_dependencies:
   flutter_launcher_icons: "^0.8.0"
   flutter_test:

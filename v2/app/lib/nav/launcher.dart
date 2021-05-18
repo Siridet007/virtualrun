@@ -2,7 +2,7 @@ import 'package:app/system/SystemInstance.dart';
 import 'package:app/ui/news.dart';
 import 'package:app/ui/ranking.dart';
 import 'package:app/ui/runner.dart';
-import 'package:app/user/login.dart';
+import 'package:app/user/socialmedia_login.dart';
 import 'package:app/util/file_util.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -98,7 +98,8 @@ class _LauncherState extends State<Launcher> {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString("token") == null) {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => Login()),
+          MaterialPageRoute(
+              builder: (BuildContext context) => SocailMediaLogin()),
           (Route<dynamic> route) => false);
     }
   }
