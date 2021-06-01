@@ -10,7 +10,9 @@ import 'package:app/data/mini.dart';
 import 'package:app/data/regis/registerrun.dart';
 import 'package:app/system/SystemInstance.dart';
 import 'package:app/ui/profile.dart';
+import 'package:app/user/super.dart';
 import 'package:app/util/file_util.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -58,6 +60,15 @@ class _Tournament extends State<Tournament> {
   var myId;
   var isStat;
   var zzz;
+  var allow;
+  var userName;
+  var passWord;
+  var au;
+  var name = '';
+  var tel = '';
+  var imgP;
+  var autho;
+  String token;
 
   ScrollController _scrollController;
 
@@ -139,7 +150,10 @@ class _Tournament extends State<Tournament> {
         _isLoading = false;
         setState(() {});
       }
-    } else {}
+    } else if(stat == "super") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SuperAdminScreen()));
+    }
     print("myList$myList");
     setState(() {});
     return myList;
@@ -183,6 +197,11 @@ class _Tournament extends State<Tournament> {
   // }
 
   Future getData() async {
+
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    token = await firebaseMessaging.getToken();
+    print("token $token");
+
     print("ididid$id");
     Map<String, String> header = {
       "Authorization": "Bearer ${_systemInstance.token}"
@@ -198,14 +217,75 @@ class _Tournament extends State<Tournament> {
       ProfileData(i['userId'], i['userName'], i['passWord'], i['au'], i['name'],
           i['tel'], i['imgProfile']);
       stat = i['au'];
+      userName = i['userName'];
+      passWord = i['passWord'];
+      au = i['au'];
+      name = i['name'];
+      tel = i['tel'];
+      imgP = i['imgProfile'];
+      autho = i['autho'];
     }
     print(stat);
+
     showList();
     checkId();
     checkcheck();
+    checkAllow();
     return stat;
   }
 
+  Future getInfo() async {
+
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    token = await firebaseMessaging.getToken();
+    print("token $token");
+
+    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+    var data = await http.post('${Config.API_URL}/user_profile/show?userId=$userId',headers: header);
+    var _data = jsonDecode(data.body);
+    print(_data);
+    var sum = _data['data'];
+    for (var i in sum) {
+      print(i);
+      stat = i['au'];
+      userName = i['userName'];
+      passWord = i['passWord'];
+      au = i['au'];
+      name = i['name'];
+      tel = i['tel'];
+      imgP = i['imgProfile'];
+      autho = i['autho'];
+    }
+    setState(() {
+
+    });
+    saveToken();
+  }
+  void saveToken(){
+    Map params = Map();
+    params['userId'] = userId.toString();
+    params['userName'] = userName.toString();
+    params['passWord'] = passWord.toString();
+    params['name'] = name.toString();
+    params['tel'] = tel.toString();
+    params['au'] = au.toString();
+    params['autho'] = autho.toString();
+    params['imgProfile'] = imgP.toString();
+    params['token'] = token.toString();
+    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+    http.post('${Config.API_URL}/user_profile/update', body: params,headers: header).then((res) {
+      Map resMap = jsonDecode(res.body) as Map;
+      var data = resMap['status'];
+      print(data);
+      if (data == 0) {
+        print("no");
+      } else {
+        // SystemInstance systemInstance = SystemInstance();
+        // systemInstance.name = _name.text;
+        print("success");
+      }
+    });
+  }
   void check() {
     print("gggg$gg");
     if (gg == 0) {
@@ -215,6 +295,19 @@ class _Tournament extends State<Tournament> {
     } else {
       print("go");
       getData();
+    }
+  }
+  Future checkAllow() async{
+    if(stat == "Admin"){
+      Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+      var data = await http.post('${Config.API_URL}/user_profile/show?userId=$userId',headers: header);
+      var _data = jsonDecode(data.body);
+      print(_data);
+      var sum = _data['data'];
+      for(var i in sum){
+        allow = i['autho'];
+      }
+      print(allow);
     }
   }
 
@@ -327,6 +420,17 @@ class _Tournament extends State<Tournament> {
               )
             ],
           ));
+  Future showCustomDialogNotAllow(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('รอการอนุมัติก่อน จึงจะเพิ่มรายการได้'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      ));
 
   Future showCustomDialogEdit(BuildContext context) => showDialog(
       context: context,
@@ -419,6 +523,7 @@ class _Tournament extends State<Tournament> {
       this.userId = id;
       print('id tournament ${userId}');
       getData();
+      getInfo();
       // showList();
     });
 
@@ -749,9 +854,15 @@ class _Tournament extends State<Tournament> {
           IconButton(
               icon: Icon(Icons.playlist_add),
               onPressed: () {
+
                 if (stat == "Admin") {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddTournament()));
+                  if(allow == "allow"){
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddTournament()));
+                  }else{
+                    showCustomDialogNotAllow(context);
+                  }
+
                 } else {
                   showCustomDialog(context);
                 }

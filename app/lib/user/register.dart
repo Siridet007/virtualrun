@@ -26,6 +26,7 @@ class _Register extends State<Register> {
   TextEditingController _tel = TextEditingController();
   String dropdown = 'User';
   String au = 'User';
+  String allow = "allow";
 
   // TextEditingController _conFirmPassWord = TextEditingController();
   // int id;
@@ -54,6 +55,7 @@ class _Register extends State<Register> {
     params['name'] = _name.text;
     params['tel'] = _tel.text;
     params['au'] = au.toString();
+    params['autho'] = allow.toString();
     //params['confirmPassWord'] = _conFirmPassWord.text;
 
     http.post('${Config.API_URL}/user_profile/save', body: params).then((res) {

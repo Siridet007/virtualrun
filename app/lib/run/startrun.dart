@@ -63,8 +63,8 @@ class _StartState extends State<StartRun> {
   var id;
   var myDate;
   StreamSubscription<LocationData> locationSubscription;
-
-
+  double _speed = 0.0;
+  var mySpeed;
   @override
   void initState() {
     // TODO: implement initState
@@ -82,6 +82,8 @@ class _StartState extends State<StartRun> {
     locationSubscription = _location.onLocationChanged().listen((locationData) {
       String lng = "${locationData.longitude}";
       String lat = "${locationData.latitude}";
+      _onSpeedChange(locationData.speed != null && locationData.speed * 3600 / 1000 > 0 ? (locationData.speed * 3600 / 1000) : 0);
+
       if (lng != _lng && lat != _lat) {
         print("on location change...");
         print("data lat ${locationData.latitude} .....");
@@ -96,11 +98,11 @@ class _StartState extends State<StartRun> {
         params['userId'] = myId.toString();
         params['id'] = allRunId.toString();
         params['dateNow'] = myDate.toString();
-        Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-        http.post('${Config.API_URL}/save_position/save',headers: header, body: params).then((res) {
-          Map resMap = jsonDecode(res.body) as Map;
-          print(resMap);
-        });
+        // Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+        // http.post('${Config.API_URL}/save_position/save',headers: header, body: params).then((res) {
+        //   Map resMap = jsonDecode(res.body) as Map;
+        //   print(resMap);
+        // });
       }
     });
     super.initState();
@@ -118,6 +120,13 @@ class _StartState extends State<StartRun> {
   //     print(paceDis);
   //   }
   // }
+  void _onSpeedChange(double newSpeed) {
+    setState(() {
+      _speed = newSpeed;
+      mySpeed = _speed.toStringAsFixed(2);
+    });
+    print("_speed $mySpeed");
+  }
 
 //-------------------------calculate distance---------------------------------//
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -218,119 +227,131 @@ class _StartState extends State<StartRun> {
         ),
       ),
 
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-          child: Column(
-            children: [
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text('${timer}', textAlign: TextAlign.center,style: TextStyle(fontSize: 50),),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
+            child: Column(
+              children: [
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text('${timer}', textAlign: TextAlign.center,style: TextStyle(fontSize: 50),),
 
-                  ),
-                  // Expanded(
-                  //   child: Text('0', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
-                  // ),
-                  // Expanded(
-                  //   //time / distance = pace----------------
-                  //   child: Text("${pace}",textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
-                  // ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text('เวลา', textAlign: TextAlign.center,style: TextStyle(fontSize: 30),),
+                    ),
+                    // Expanded(
+                    //   child: Text('0', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                    // ),
+                    // Expanded(
+                    //   //time / distance = pace----------------
+                    //   child: Text("${pace}",textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                    // ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text('เวลา', textAlign: TextAlign.center,style: TextStyle(fontSize: 30),),
 
-                  ),
-                  // Expanded(
-                  //   child: Text('ครั้งต่อนาที', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                  // ),
-                  // Expanded(
-                  //   child: Text('เพซ',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                  // ),
-                ],
-              ),
-              Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 50),
-                  ),
-
-                  Text('${distanceMessage}',style: TextStyle(fontSize: 50),),
-                  Text('กิโลเมตร',style: TextStyle(fontSize: 30),),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 50),
-              ),
-              Divider(
-                height: 20,
-                thickness: 5,
-                indent: 20,
-                endIndent: 20,
-                color: Colors.grey[800],
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      child: Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.lightBlue,
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.play_arrow),
-                          color: Colors.white,
-                          iconSize: 100,
-                          onPressed: () {
-                            startstopwatch();
-                            locationSubscription.resume();
-
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(builder: (context) => Pause()));
-                           },
-
-                        ),
-                      ),
+                    ),
+                    // Expanded(
+                    //   child: Text('ครั้งต่อนาที', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                    // ),
+                    // Expanded(
+                    //   child: Text('เพซ',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                    // ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 50),
                     ),
 
-
-                  ),
-                  Expanded(
-                    child: Container(
-                      child: Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.lightBlue,
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.pause),
-                          color: Colors.white,
-                          iconSize: 100,
-                          onPressed: () {
-                            stopstopwatch();
-                            locationSubscription.pause();
-                            print("type:${theType}");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Pause(kmData: distanceMessage,timeData: timer,myType: theType,id: allRunId,)));
-                          },
-                        ),
-                      ),
+                    Text('${distanceMessage}',style: TextStyle(fontSize: 50),),
+                    Text('กิโลเมตร',style: TextStyle(fontSize: 30),),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 50),
                     ),
 
+                    Text('${mySpeed}',style: TextStyle(fontSize: 50),),
+                    Text('อัตราเร็ว',style: TextStyle(fontSize: 30),),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 50),
+                ),
+                Divider(
+                  height: 20,
+                  thickness: 5,
+                  indent: 20,
+                  endIndent: 20,
+                  color: Colors.grey[800],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        child: Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.lightBlue,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.play_arrow),
+                            color: Colors.white,
+                            iconSize: 100,
+                            onPressed: () {
+                              startstopwatch();
+                              locationSubscription.resume();
 
-                  ),
-                ],
-              ),
-            ],
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(builder: (context) => Pause()));
+                             },
+
+                          ),
+                        ),
+                      ),
+
+
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.lightBlue,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.pause),
+                            color: Colors.white,
+                            iconSize: 100,
+                            onPressed: () {
+                              stopstopwatch();
+                              locationSubscription.pause();
+                              print("type:${theType}");
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => Pause(kmData: distanceMessage,timeData: timer,myType: theType,id: allRunId,speed: mySpeed,)));
+                            },
+                          ),
+                        ),
+                      ),
+
+
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

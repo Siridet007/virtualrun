@@ -20,8 +20,9 @@ class Pause extends StatefulWidget {
   final String timeData;
   final String myType;
   final int id;
+  final String speed;
 
-  const Pause({Key key, this.kmData, this.timeData,this.myType,this.id}) : super(key: key);
+  const Pause({Key key, this.kmData, this.timeData,this.myType,this.id,this.speed}) : super(key: key);
   @override
   _PauseState createState() => _PauseState();
 }
@@ -72,6 +73,9 @@ class _PauseState extends State<Pause> {
 
   var timer;
   var dd = Duration(hours: 0,minutes: 0,seconds: 0);
+  var pace;
+  var tall;
+  var mySpeed;
 
 
   @override
@@ -80,6 +84,7 @@ class _PauseState extends State<Pause> {
     allRunId = widget.id;
     SystemInstance systemInstance = SystemInstance();
     myId = systemInstance.userId;
+    mySpeed = widget.speed;
     _fileUtil.readFile().then((value){
       this.userId = value;
       print("UserID:${userId}");
@@ -187,6 +192,19 @@ class _PauseState extends State<Pause> {
     var km = double.parse(theKm);
     cals = 68.83*km*1.036;
     calories = cals.toInt();
+
+  }
+  void calculatePace(){
+    tall = 170;
+    var aa = tall * 0.415;
+
+    var km = double.parse(theKm);
+    // var km = 1.00;
+    var myPace;
+    myPace = km*aa;
+    pace = myPace.toInt();
+    print("pace $pace");
+
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -454,6 +472,7 @@ class _PauseState extends State<Pause> {
     theType = widget.myType;
     print("tpe:${theType}");
     calculateCals();
+    calculatePace();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -518,7 +537,7 @@ class _PauseState extends State<Pause> {
 
                          ),
                          Expanded(
-                                 child: Text('แคลอรี่', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                           child: Text('แคลอรี่', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
 
                                ),
                          Expanded(
@@ -529,31 +548,31 @@ class _PauseState extends State<Pause> {
                      Padding(
                        padding: EdgeInsets.only(top: 20),
                      ),
-                     // Row(
-                     //   children: <Widget>[
-                     //
-                     //     Expanded(
-                     //       child: Text('0 ม.', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
-                     //     ),
-                     //     Expanded(
-                     //       child: Text('--',textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
-                     //     ),
-                     //   ],
-                     // ),
-                     // Row(
-                     //   children: <Widget>[
-                     //     Expanded(
-                     //       child: Text('แคลอรี่', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                     //
-                     //     ),
-                     //     Expanded(
-                     //       child: Text('วิ่งไต่ระดับ', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                     //     ),
-                     //     Expanded(
-                     //       child: Text('ครั้งต่อนาที',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                     //     ),
-                     //   ],
-                     // ),
+                     Row(
+                       children: <Widget>[
+
+                         Expanded(
+                           child: Text('$pace', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                         ),
+                         Expanded(
+                           child: Text('$mySpeed',textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                         ),
+                       ],
+                     ),
+                     Row(
+                       children: <Widget>[
+                         Expanded(
+                           child: Text('เพซ', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+
+                         ),
+                         Expanded(
+                           child: Text('อัตราเร็ว', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                         ),
+                         // Expanded(
+                         //   child: Text('ครั้งต่อนาที',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                         // ),
+                       ],
+                     ),
                      Divider(
                        height: 20,
                        thickness: 5,

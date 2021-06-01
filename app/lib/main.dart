@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'nav/launcher.dart';
 
 void main() => runApp(MyApp());
@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Google Maps Demo',
       //home: Login(),
       home: First(),
-      routes: {'/Launcher': (BuildContext context) => Launcher()},
     );
   }
 }
@@ -26,8 +25,8 @@ class First extends StatefulWidget {
 }
 
 class _First extends State {
-  /*SystemInstance _systemInstance = SystemInstance();
 
+  /*SystemInstance _systemInstance = SystemInstance();
   @override
   void initState() {
     Map header = {"Authorization": "Bearer ${_systemInstance.token}"};

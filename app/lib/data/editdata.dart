@@ -61,6 +61,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
   var imgAll;
   TextEditingController price = TextEditingController();
   var myPrice;
+  bool canDelete = false;
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picker = await showDatePicker(
@@ -158,7 +159,28 @@ class _EditDataScreenState extends State<EditDataScreen> {
               )
             ],
           ));
-
+  Future showCustomDialogCannotDelete(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('ไม่สามารถลบได้ เนื่องจากมีผู้สมัครรายการนี้แล้ว'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      ));
+  Future showCustomDialogCannotEdit(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('ไม่สามารถแก้ไขได้ เนื่องจากมีผู้สมัครรายการนี้แล้ว'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      ));
   removeList() async {
     print("remove");
     print(aid);
@@ -183,6 +205,27 @@ class _EditDataScreenState extends State<EditDataScreen> {
           text: 'ไม่ใช่รายการที่ท่านสร้าง ไม่สามารถลบได้');
     }
   }
+  Future getCheck() async{
+    Map<String, String> header = {
+      "Authorization": "Bearer ${_systemInstance.token}"
+    };
+    var data = await http.post('${Config.API_URL}/test_run/load_check?id=$aid',
+        headers: header);
+    var _data = jsonDecode(data.body);
+    print(_data);
+    List sum = _data['data'];
+    print(sum);
+    if(sum.length == 0){
+      canDelete = true;
+    }else{
+      canDelete = false;
+    }
+    setState(() {
+
+    });
+    print(canDelete);
+  }
+
 
   void add() {
     print(userId);
@@ -226,6 +269,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
       if (data == 1) {
         Navigator.pop(context);
         Navigator.of(context).pushReplacementNamed("/Launcher");
+        showCustomDialog(context);
         // Navigator.of(context).push(
         //     MaterialPageRoute(builder: (BuildContext context) => Launcher()));
         // showCustomDialog(context);
@@ -263,13 +307,14 @@ class _EditDataScreenState extends State<EditDataScreen> {
     print(myDate);
     print(myEndDate);
     print(imgAll);
+    aid = widget.aaid;
+    print("aid $aid");
+    getCheck();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    aid = widget.aaid;
-    print("aid $aid");
 
     return Scaffold(
       appBar: AppBar(
@@ -279,7 +324,13 @@ class _EditDataScreenState extends State<EditDataScreen> {
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
-              showCustomDialogDelete(context);
+              if(canDelete == false){
+                showCustomDialogCannotDelete(context);
+              }else if(canDelete == true){
+                showCustomDialogDelete(context);
+              }
+
+
             },
           )
         ],
@@ -491,18 +542,23 @@ class _EditDataScreenState extends State<EditDataScreen> {
                 color: Colors.blue,
                 child: Text('แก้ไข'),
                 onPressed: () {
-                  if (nameAll.text.isNotEmpty |
-                      dropdown.isNotEmpty |
-                      km.text.isNotEmpty |
-                      myDate.isNotEmpty |
-                      myEndDate.isNotEmpty) {
-                    add();
-                  } else {
-                    CoolAlert.show(
-                        context: context,
-                        type: CoolAlertType.warning,
-                        text: 'กรุณากรอกข้อมูลให้ครบถ้วน');
+                  if(canDelete == false){
+                    showCustomDialogCannotEdit(context);
+                  }else if(canDelete == true){
+                    if (nameAll.text.isNotEmpty |
+                    dropdown.isNotEmpty |
+                    km.text.isNotEmpty |
+                    myDate.isNotEmpty |
+                    myEndDate.isNotEmpty) {
+                      add();
+                    } else {
+                      CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.warning,
+                          text: 'กรุณากรอกข้อมูลให้ครบถ้วน');
+                    }
                   }
+
                 },
               )),
         ],

@@ -20,6 +20,7 @@ class _RegisterAdminScreenState extends State<RegisterAdminScreen> {
   TextEditingController _tel = TextEditingController();
   String dropdown = 'User';
   String au = 'Admin';
+  String allow = "not";
 
   void onRegister() {
     Map params = Map();
@@ -28,6 +29,7 @@ class _RegisterAdminScreenState extends State<RegisterAdminScreen> {
     params['name'] = _name.text;
     params['tel'] = _tel.text;
     params['au'] = au.toString();
+    params['autho'] = allow.toString();
     //params['confirmPassWord'] = _conFirmPassWord.text;
 
     http.post('${Config.API_URL}/user_profile/save', body: params).then((res) {
