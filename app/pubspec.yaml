@@ -51,8 +51,9 @@ dependencies:
   shared_preferences:
   loading: ^1.0.2
   cool_alert: ^1.0.3
-  firebase_messaging: ^7.0.0
-
+  firebase_messaging: ^7.0.3
+  firebase_core:
+  overlay_support:
 
 
 

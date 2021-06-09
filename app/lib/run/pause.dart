@@ -84,7 +84,6 @@ class _PauseState extends State<Pause> {
     allRunId = widget.id;
     SystemInstance systemInstance = SystemInstance();
     myId = systemInstance.userId;
-    mySpeed = widget.speed;
     _fileUtil.readFile().then((value){
       this.userId = value;
       print("UserID:${userId}");
@@ -521,10 +520,10 @@ class _PauseState extends State<Pause> {
                            child: Text('${theKm}', textAlign: TextAlign.center,style: TextStyle(fontSize: 35),),
 
                          ),
-                         Expanded(
-                           child: Text('${calories}', textAlign: TextAlign.center,style: TextStyle(fontSize: 35),),
+                         // Expanded(
+                         //   child: Text('${calories}', textAlign: TextAlign.center,style: TextStyle(fontSize: 35),),
 
-                         ),
+                         // ),
                          Expanded(
                            child: Text('${theTime}',textAlign: TextAlign.center,style: TextStyle(fontSize: 28),),
                          ),
@@ -536,10 +535,10 @@ class _PauseState extends State<Pause> {
                            child: Text('กิโลเมตร', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
 
                          ),
-                         Expanded(
-                           child: Text('แคลอรี่', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                         // Expanded(
+                         //   child: Text('แคลอรี่', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
 
-                               ),
+                               // ),
                          Expanded(
                            child: Text('เวลา',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
                          ),
@@ -552,21 +551,21 @@ class _PauseState extends State<Pause> {
                        children: <Widget>[
 
                          Expanded(
-                           child: Text('$pace', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                           child: Text('$calories', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
                          ),
                          Expanded(
-                           child: Text('$mySpeed',textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                           child: Text('$pace',textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
                          ),
                        ],
                      ),
                      Row(
                        children: <Widget>[
                          Expanded(
-                           child: Text('เพซ', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                           child: Text('แคลลอรี่', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
 
                          ),
                          Expanded(
-                           child: Text('อัตราเร็ว', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                           child: Text('เพซ', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
                          ),
                          // Expanded(
                          //   child: Text('ครั้งต่อนาที',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),

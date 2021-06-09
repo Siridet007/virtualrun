@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:app/config/config.dart';
+import 'package:app/system/SystemInstance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
 
 class MapSample extends StatefulWidget {
   @override
@@ -14,30 +18,80 @@ class MapSample extends StatefulWidget {
 class MyMapPageState extends State<MapSample> {
   Completer<GoogleMapController> _controller = Completer();
   LocationData currentLocation;
+  static const LatLng _center = const LatLng(33.738045, 73.084488);
+  List<LatLng> latlng = [];
+  SystemInstance systemInstance = SystemInstance();
+  SystemInstance _systemInstance = SystemInstance();
 
-  var point = <LatLng>[
-    LatLng(16.4464643, 102.8492125),
-    LatLng(16.4467942, 102.8494465),
-    LatLng(16.4472939, 102.8496678),
-    LatLng(16.4475511, 102.8497208),
-    LatLng(16.4479724, 102.8497248),
-    LatLng(16.4484631, 102.8496376),
-    LatLng(16.4489853, 102.8494184),
-    LatLng(16.4493364, 102.8494921),
-    LatLng(16.4511137, 102.848984),
-    LatLng(16.4516719, 102.8491409),
-    LatLng(16.4518861, 102.8496344),
-    LatLng(16.4519758, 102.8535971),
-    LatLng(16.4514739, 102.8547799),
-    LatLng(16.4509434, 102.8551825),
-    LatLng(16.4501508, 102.8550715),
-    LatLng(16.4497263, 102.8544097),
-    LatLng(16.4452104, 102.8520371),
-    LatLng(16.4464643, 102.8492125),
-  ];
+  double a = 16.4464643;
+  double b = 102.8492125;
+  var myId;
+  var allRunId = 4693;
+  var myDate;
+  var point;
+
+
+  Future getInfo() async{
+    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+    var data = await http.post('${Config.API_URL}/save_position/show?userId=$myId&id=$allRunId&dateNow=$myDate',headers: header );
+    var _data = jsonDecode(data.body);
+    var sum = _data['data'];
+  }
+
+  Future getData() async{
+    Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+    var data = await http.post('${Config.API_URL}/save_position/show?userId=$myId&id=$allRunId&dateNow=$myDate',headers: header );
+    var _data = jsonDecode(data.body);
+    var sum = _data['data'];
+    for(var i in sum){
+      print("iiii $i");
+    }
+  }
+
+
+  void PolylineLatLng(){
+    LatLng _new = LatLng(a, b);
+    latlng.add(_new);
+    point = <LatLng>[
+      LatLng(a, b),
+      LatLng(16.4467942, 102.8494465),
+      LatLng(16.4472939, 102.8496678),
+      LatLng(16.4475511, 102.8497208),
+      LatLng(16.4479724, 102.8497248),
+      LatLng(16.4484631, 102.8496376),
+      LatLng(16.4489853, 102.8494184),
+      LatLng(16.4493364, 102.8494921),
+      LatLng(16.4511137, 102.848984),
+      LatLng(16.4516719, 102.8491409),
+      LatLng(16.4518861, 102.8496344),
+      LatLng(16.4519758, 102.8535971),
+      LatLng(16.4514739, 102.8547799),
+      LatLng(16.4509434, 102.8551825),
+      LatLng(16.4501508, 102.8550715),
+      LatLng(16.4497263, 102.8544097),
+      LatLng(16.4452104, 102.8520371),
+      LatLng(16.4464643, 102.8492125),
+    ];
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // PolylineLatLng();
+    myId = systemInstance.userId;
+    DateTime dateNow = DateTime.now();
+    myDate = "${dateNow.day}/${dateNow.month}/${dateNow.year}";
+    getData();
+    PolylineLatLng();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Map'),

@@ -82,7 +82,7 @@ class _StartState extends State<StartRun> {
     locationSubscription = _location.onLocationChanged().listen((locationData) {
       String lng = "${locationData.longitude}";
       String lat = "${locationData.latitude}";
-      _onSpeedChange(locationData.speed != null && locationData.speed * 3600 / 1000 > 0 ? (locationData.speed * 3600 / 1000) : 0);
+      // _onSpeedChange(locationData.speed != null && locationData.speed * 3600 / 1000 > 0 ? (locationData.speed * 3600 / 1000) : 0);
 
       if (lng != _lng && lat != _lat) {
         print("on location change...");
@@ -98,11 +98,11 @@ class _StartState extends State<StartRun> {
         params['userId'] = myId.toString();
         params['id'] = allRunId.toString();
         params['dateNow'] = myDate.toString();
-        // Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-        // http.post('${Config.API_URL}/save_position/save',headers: header, body: params).then((res) {
-        //   Map resMap = jsonDecode(res.body) as Map;
-        //   print(resMap);
-        // });
+        Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
+        http.post('${Config.API_URL}/save_position/save',headers: header, body: params).then((res) {
+          Map resMap = jsonDecode(res.body) as Map;
+          print(resMap);
+        });
       }
     });
     super.initState();
@@ -120,13 +120,13 @@ class _StartState extends State<StartRun> {
   //     print(paceDis);
   //   }
   // }
-  void _onSpeedChange(double newSpeed) {
-    setState(() {
-      _speed = newSpeed;
-      mySpeed = _speed.toStringAsFixed(2);
-    });
-    print("_speed $mySpeed");
-  }
+  // void _onSpeedChange(double newSpeed) {
+  //   setState(() {
+  //     _speed = newSpeed;
+  //     mySpeed = _speed.toStringAsFixed(2);
+  //   });
+  //   print("_speed $mySpeed");
+  // }
 
 //-------------------------calculate distance---------------------------------//
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -278,8 +278,8 @@ class _StartState extends State<StartRun> {
                       padding: EdgeInsets.only(top: 50),
                     ),
 
-                    Text('${mySpeed}',style: TextStyle(fontSize: 50),),
-                    Text('อัตราเร็ว',style: TextStyle(fontSize: 30),),
+                    // Text('${mySpeed}',style: TextStyle(fontSize: 50),),
+                    // Text('อัตราเร็ว',style: TextStyle(fontSize: 30),),
                   ],
                 ),
                 Padding(
@@ -340,7 +340,7 @@ class _StartState extends State<StartRun> {
                               print("type:${theType}");
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => Pause(kmData: distanceMessage,timeData: timer,myType: theType,id: allRunId,speed: mySpeed,)));
+                                  MaterialPageRoute(builder: (context) => Pause(kmData: distanceMessage,timeData: timer,myType: theType,id: allRunId,)));
                             },
                           ),
                         ),
