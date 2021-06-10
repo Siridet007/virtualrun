@@ -20,8 +20,9 @@ class RegisterRun extends StatefulWidget {
   final String dates;
   final String datee;
   final String price;
+  final String access;
 
-  const RegisterRun({Key key, this.aaid, this.name, this.dis, this.dates, this.datee,this.price}) : super(key: key);
+  const RegisterRun({Key key, this.aaid, this.name, this.dis, this.dates, this.datee,this.price,this.access}) : super(key: key);
 
 
 
@@ -52,6 +53,9 @@ class _RegisterRun extends State<RegisterRun> {
   var status = "0";
   var price;
   File _f;
+  var access;
+  var state;
+  var accc;
 
   @override
   void initState(){
@@ -60,7 +64,6 @@ class _RegisterRun extends State<RegisterRun> {
 //    aid = systemInstance.aid.toString();
     userId = systemInstance.userId.toString();
     userName = systemInstance.userName;
-
     // _fileUtil.readFile().then((aid){
     //   this._aid = aid;
     //   print('aid save ${_aid}');
@@ -103,12 +106,26 @@ class _RegisterRun extends State<RegisterRun> {
 
 
   void onClick(){
+    var fff;
+    if(state == 0){
+      fff = "shirt";
+    }else if(state == 1){
+      fff = "hat";
+      size = "";
+    }else if(state == 2){
+      fff = "bag";
+      size = "";
+    }else{
+      fff = "non";
+      size = "";
+    }
     if(price == '0'){
       Map params = Map();
       params['id'] = aID.toString();
       params['userId'] = userId.toString();
       params['size'] = size;
       params['status'] = status.toString();
+      params['accessories'] = fff.toString();
       Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
       http.post('${Config.API_URL}/test_run/save_run',headers: header,body: params).then((res){
         Map resMap = jsonDecode(res.body) as Map;
@@ -129,6 +146,7 @@ class _RegisterRun extends State<RegisterRun> {
     params['userId'] = userId.toString();
     params['size'] = size;
     params['status'] = status.toString();
+    params['accessories'] = fff.toString();
     params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(), filename: "filename.png");
     FormData formData = FormData.fromMap(params);
     dio.options.headers["Authorization"] = "Bearer ${_systemInstance.token}";
@@ -155,6 +173,20 @@ class _RegisterRun extends State<RegisterRun> {
     myDate = widget.dates;
     myEndDate = widget.datee;
     price = widget.price;
+    access = widget.access;
+    if(access == "shirt"){
+      state = 0;
+      accc = "เสื้อ";
+    }else if(access == "hat"){
+      state = 1;
+      accc = "หมวก";
+    }else if(access == "bag"){
+      state = 2;
+      accc = "ถุงผ้า";
+    }else{
+      state = 3;
+      accc = "ไม่มี";
+    }
     print(price);
     // TODO: implement build
     return Scaffold(
@@ -243,22 +275,39 @@ class _RegisterRun extends State<RegisterRun> {
                     )
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                  child: DropDownField(
-                    controller: sizeSelect,
-                    hintText: "เลือกขนาดเสื้อ",
-                    enabled: true,
-                    itemsVisibleInDropdown: 5,
-                    items: mySize,
-                    textStyle: TextStyle(color: Colors.black),
-                    onValueChanged: (value){
-                      setState(() {
-                        size = value;
-                      });
-                    },
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                      child: Text('ของที่ระลึก -> ',style: TextStyle(color: Colors.black),),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                      child: Text('$accc',style: TextStyle(color: Colors.black),),
+                    )
+                  ],
                 ),
+                if(state == 0)...[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                    child: DropDownField(
+                      controller: sizeSelect,
+                      hintText: "เลือกขนาดเสื้อ",
+                      enabled: true,
+                      itemsVisibleInDropdown: 5,
+                      items: mySize,
+                      textStyle: TextStyle(color: Colors.black),
+                      onValueChanged: (value){
+                        setState(() {
+                          size = value;
+                        });
+                      },
+                    ),
+                  ),
+                ]else...[
+                  Padding(padding: EdgeInsets.zero,),
+                ],
+
                 price == '0'? Padding(padding: EdgeInsets.zero,): Container(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                   child: Text('ส่งใบเสร็จยืนยันการชำระเงิน',style: TextStyle(color: Colors.black),),

@@ -33,6 +33,7 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
   int rad;
   var rid;
   var myTime;
+  var access;
 
 
 
@@ -48,6 +49,7 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
       status = i['status'];
       size = i['size'];
       rid = i['rid'];
+      access = i['accessories'];
     }
     var myDate = myTime.toString();
     print("myDate $myDate");
@@ -63,6 +65,7 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
       img = img;
       rad = int.parse(ss);
       size = size;
+      access = access;
     });
     print(time);
     print(img);
@@ -176,14 +179,18 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
                 ),
               ),
             ),
-            Center(
-              child: Card(
-                child: ListTile(
-                  leading: Text('ขนาดเสื้อ:'),
-                  title: Text("$size", style: TextStyle(color: Colors.blueGrey),),
+            if(access == "shirt")...[
+              Center(
+                child: Card(
+                  child: ListTile(
+                    leading: Text('ขนาดเสื้อ:'),
+                    title: Text("$size", style: TextStyle(color: Colors.blueGrey),),
+                  ),
                 ),
               ),
-            ),
+            ]else ...[
+            ],
+
 
             img == null ? Padding(padding: EdgeInsets.zero,): Container(
               padding: const EdgeInsets.only(top: 30),

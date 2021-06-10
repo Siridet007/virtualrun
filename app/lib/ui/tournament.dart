@@ -7,6 +7,7 @@ import 'package:app/data/full.dart';
 import 'package:app/data/half.dart';
 import 'package:app/data/infodata.dart';
 import 'package:app/data/mini.dart';
+import 'package:app/data/oldlist.dart';
 import 'package:app/data/regis/registerrun.dart';
 import 'package:app/system/SystemInstance.dart';
 import 'package:app/ui/profile.dart';
@@ -15,6 +16,7 @@ import 'package:app/util/file_util.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,6 +58,7 @@ class _Tournament extends State<Tournament> {
   var dates;
   var datee;
   var img;
+  var accessories;
   var price;
   var myId;
   var isStat;
@@ -69,11 +72,16 @@ class _Tournament extends State<Tournament> {
   var imgP;
   var autho;
   String token;
+  final _date = new DateTime.now();
+  var date2s;
+  var s2date;
 
   ScrollController _scrollController;
 
   Future showList() async {
     print("stat :$stat");
+    date2s = ('${_date.day}/${_date.month}/${_date.year}');
+    s2date = new DateFormat('d/M/yyyy').parse(date2s);
     myList = [
       {
         "id": "0",
@@ -112,8 +120,10 @@ class _Tournament extends State<Tournament> {
               i['dateEnd'],
               i['imgAll'],
               i['price'],
+              i['accessories'],
               i['createDate']);
           // alls.add(allRunner);
+
           myList.add(allRunner);
         }
       } else {
@@ -142,10 +152,21 @@ class _Tournament extends State<Tournament> {
               i['dateEnd'],
               i['imgAll'],
               i['price'],
+              i['accessories'],
               i['createDate']);
           // alls.add(allRunner);
-          myList.add(allRunner);
-        }
+          var dd = i['dateStart'];
+          var ddd = new DateFormat('d/M/yyyy').parse(dd);
+          print("ddd $ddd");
+          var ss = i['dateEnd'];
+          var sss = new DateFormat('d/M/yyyy').parse(ss);
+          print("sss $sss");
+          if(s2date.isAtSameMomentAs(ddd) && s2date.isBefore(ddd) || s2date.isAfter(sss) ){
+
+          }else{
+            myList.add(allRunner);
+          }
+                  }
       } else {
         _isLoading = false;
         setState(() {});
@@ -259,7 +280,7 @@ class _Tournament extends State<Tournament> {
     setState(() {
 
     });
-    saveToken();
+    // saveToken();
   }
   void saveToken(){
     Map params = Map();
@@ -367,6 +388,7 @@ class _Tournament extends State<Tournament> {
                     dates: dates,
                     datee: datee,
                     price: price,
+                access: accessories,
                   )));
     } else {
       showCustomDialogFailed(context);
@@ -523,7 +545,7 @@ class _Tournament extends State<Tournament> {
       this.userId = id;
       print('id tournament ${userId}');
       getData();
-      getInfo();
+      // getInfo();
       // showList();
     });
 
@@ -734,6 +756,7 @@ class _Tournament extends State<Tournament> {
                                 datee = myList[index].dateEnd;
                                 img = myList[index].imgAll;
                                 price = myList[index].price;
+                                accessories = myList[index].accessories;
                                 print(aaid);
                                 print(nameAll);
                                 print(dis);
@@ -753,6 +776,7 @@ class _Tournament extends State<Tournament> {
                                                 dateE: datee,
                                                 dateS: dates,
                                                 img: img,
+                                                acces: accessories,
                                                 price: price,
                                               )));
                                 } else {
@@ -852,6 +876,12 @@ class _Tournament extends State<Tournament> {
         ),
         actions: [
           IconButton(
+           icon: Icon(Icons.history),
+              onPressed: (){
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OldListScreen()));
+          }),
+          IconButton(
               icon: Icon(Icons.playlist_add),
               onPressed: () {
 
@@ -867,6 +897,7 @@ class _Tournament extends State<Tournament> {
                   showCustomDialog(context);
                 }
               }),
+
         ],
       ),
       body: ListView.builder(
@@ -1201,10 +1232,11 @@ class AllRunner {
   final String dateEnd;
   final String imgAll;
   final String price;
+  final String accessories;
   final String createDate;
 
   AllRunner(this.id, this.userId, this.nameAll, this.distance, this.type,
-      this.dateStart, this.dateEnd, this.imgAll, this.price, this.createDate);
+      this.dateStart, this.dateEnd, this.imgAll, this.price, this.accessories,this.createDate);
 }
 
 class MyRunner {

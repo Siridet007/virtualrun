@@ -8,6 +8,7 @@ import 'package:app/util/file_util.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import '../config/config.dart';
@@ -41,6 +42,9 @@ class _FunRun extends State {
   var price;
   bool _isLoading = true;
   List _list = List();
+  final _date = new DateTime.now();
+  var date2s;
+  var s2date;
 
   Future _getData()async{
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
@@ -188,6 +192,8 @@ class _FunRun extends State {
 
   Future showList()async{
     print("stat :$stat");
+    date2s = ('${_date.day}/${_date.month}/${_date.year}');
+    s2date = new DateFormat('d/M/yyyy').parse(date2s);
     if(stat == "Admin"){
       print("admin");
       Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
@@ -209,7 +215,18 @@ class _FunRun extends State {
             i["createDate"],
             i["price"],
           );
-          runs.add(run);
+          var dd = i['dateStart'];
+          var ddd = new DateFormat('d/M/yyyy').parse(dd);
+          print("ddd $ddd");
+          var ss = i['dateEnd'];
+          var sss = new DateFormat('d/M/yyyy').parse(ss);
+          print("sss $sss");
+          if(s2date.isAtSameMomentAs(ddd) && s2date.isBefore(ddd) || s2date.isAfter(sss) ){
+
+          }else{
+            runs.add(run);
+          }
+
         }
       }else{
         _isLoading = false;
@@ -237,7 +254,17 @@ class _FunRun extends State {
             i["createDate"],
             i["price"],
           );
-          runs.add(run);
+          var dd = i['dateStart'];
+          var ddd = new DateFormat('d/M/yyyy').parse(dd);
+          print("ddd $ddd");
+          var ss = i['dateEnd'];
+          var sss = new DateFormat('d/M/yyyy').parse(ss);
+          print("sss $sss");
+          if(s2date.isAtSameMomentAs(ddd) && s2date.isBefore(ddd) || s2date.isAfter(sss) ){
+
+          }else{
+            runs.add(run);
+          }
         }
       }else{
         _isLoading = false;

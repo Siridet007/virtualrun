@@ -33,6 +33,7 @@ class _AddTournament extends State<AddTournament> {
   TextEditingController nameAll = TextEditingController();
   TextEditingController km = TextEditingController();
   TextEditingController time = TextEditingController();
+  TextEditingController accessories = TextEditingController();
   String dropdown = '';
   SystemInstance _systemInstance = SystemInstance();
   File _image;
@@ -45,6 +46,7 @@ class _AddTournament extends State<AddTournament> {
   TextEditingController price = TextEditingController();
   Dialog dialog = new Dialog();
   FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  int rad;
   // defaultImage() async {
   //   _f = await getImageFileFromAssets('NoImage.png');
   // }
@@ -89,6 +91,19 @@ class _AddTournament extends State<AddTournament> {
       });
 
   void add() {
+    var aa;
+    if(accessories == "เสื้อ"){
+      print("$accessories");
+    }
+    if(rad == 0){
+      aa = "shirt";
+    }else if(rad == 1){
+      aa = "hat";
+    }else if(rad == 2){
+      aa = "bag";
+    }else{
+      aa = "non";
+    }
     print(userId);
     Dio dio = Dio();
     Map<String, dynamic> params = Map();
@@ -98,6 +113,7 @@ class _AddTournament extends State<AddTournament> {
     params["dateStart"] = myDate;
     params["dateEnd"] = myEndDate;
     params["userId"] = userId.toString();
+    params["accessories"] = aa.toString();
     params["price"] = price.text;
     params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(),
         filename: "filename.png");
@@ -298,6 +314,77 @@ class _AddTournament extends State<AddTournament> {
                       ),
                     ),
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Text("ของที่ระลึก", style: TextStyle(color: Colors.black),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Radio(
+                          value: 0,
+                          groupValue: rad,
+                          onChanged: (T){
+                            print(T);
+                            setState(() {
+                              rad = T;
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: Text("เสื้อ",style: TextStyle(color: Colors.black),),
+                      ),
+                      Expanded(
+                        child: Radio(
+                          value: 1,
+                          groupValue: rad,
+                          onChanged: (T){
+                            print(T);
+                            setState(() {
+                              rad = T;
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: Text("หมวก",style: TextStyle(color: Colors.black),),
+                      ),
+                      Expanded(
+                        child: Radio(
+                          value: 2,
+                          groupValue: rad,
+                          onChanged: (T){
+                            print(T);
+                            setState(() {
+                              rad = T;
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: Text("ถุงผ้า",style: TextStyle(color: Colors.black),),
+                      ),
+                      Expanded(
+                        child: Radio(
+                          value: 3,
+                          groupValue: rad,
+                          onChanged: (T){
+                            print(T);
+                            setState(() {
+                              rad = T;
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: Text("ไม่มี",style: TextStyle(color: Colors.black),),
+                      )
+                    ],
+                  ),
                 ),
                 Container(
                   padding: EdgeInsets.all(10),

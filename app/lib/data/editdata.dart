@@ -20,6 +20,7 @@ class EditDataScreen extends StatefulWidget {
   final String dateS;
   final String dateE;
   final String img;
+  final String acces;
   final String price;
 
   const EditDataScreen(
@@ -31,6 +32,7 @@ class EditDataScreen extends StatefulWidget {
       this.dateS,
       this.dateE,
       this.img,
+        this.acces,
       this.price})
       : super(key: key);
 
@@ -60,8 +62,12 @@ class _EditDataScreenState extends State<EditDataScreen> {
   var myName;
   var imgAll;
   TextEditingController price = TextEditingController();
+  TextEditingController accessories = TextEditingController();
   var myPrice;
+  var myAccess;
   bool canDelete = false;
+  int rad;
+  var accc;
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picker = await showDatePicker(
@@ -231,6 +237,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
     print(userId);
     var isName;
     var isPrice;
+    var isAcces;
     if (nameAll.text.isEmpty) {
       isName = myName;
     } else {
@@ -241,6 +248,24 @@ class _EditDataScreenState extends State<EditDataScreen> {
     } else {
       isPrice = price.text;
     }
+    if(accessories.text.isEmpty){
+      isAcces = myAccess;
+    }else{
+      isAcces = accessories.text;
+    }
+    var aa;
+    if(accessories == "เสื้อ"){
+      print("$accessories");
+    }
+    if(rad == 0){
+      aa = "shirt";
+    }else if(rad == 1){
+      aa = "hat";
+    }else if(rad == 2){
+      aa = "bag";
+    }else{
+      aa = "non";
+    }
     Dio dio = Dio();
     Map<String, dynamic> params = Map();
     params['id'] = aid;
@@ -250,6 +275,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
     params["dateStart"] = myDate;
     params["dateEnd"] = myEndDate;
     params["userId"] = userId.toString();
+    params["accessories"] = aa.toString();
     params["price"] = isPrice.toString();
     params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(),
         filename: "filename.png");
@@ -300,6 +326,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
     myDate = widget.dateS;
     myEndDate = widget.dateE;
     imgAll = widget.img;
+    myAccess = widget.acces;
     myPrice = widget.price;
     print(myName);
     print(kmDrop);
@@ -307,6 +334,20 @@ class _EditDataScreenState extends State<EditDataScreen> {
     print(myDate);
     print(myEndDate);
     print(imgAll);
+    print(myAccess);
+    if(myAccess == "shirt"){
+      accc = "เสื้อ";
+      rad = 0;
+    }else if(myAccess == "hat"){
+      accc = "หมวก";
+      rad = 1;
+    }else if(myAccess == "bag"){
+      accc = "ถุงผ้า";
+      rad = 2;
+    }else{
+      accc = "ไม่มี";
+      rad = 3;
+    }
     aid = widget.aaid;
     print("aid $aid");
     getCheck();
@@ -441,6 +482,77 @@ class _EditDataScreenState extends State<EditDataScreen> {
           //     ),
           //   ),
           // ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Text("ของที่ระลึก", style: TextStyle(color: Colors.black),),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Radio(
+                    value: 0,
+                    groupValue: rad,
+                    onChanged: (T){
+                      print(T);
+                      setState(() {
+                        rad = T;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Text("เสื้อ",style: TextStyle(color: Colors.black),),
+                ),
+                Expanded(
+                  child: Radio(
+                    value: 1,
+                    groupValue: rad,
+                    onChanged: (T){
+                      print(T);
+                      setState(() {
+                        rad = T;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Text("หมวก",style: TextStyle(color: Colors.black),),
+                ),
+                Expanded(
+                  child: Radio(
+                    value: 2,
+                    groupValue: rad,
+                    onChanged: (T){
+                      print(T);
+                      setState(() {
+                        rad = T;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Text("ถุงผ้า",style: TextStyle(color: Colors.black),),
+                ),
+                Expanded(
+                  child: Radio(
+                    value: 3,
+                    groupValue: rad,
+                    onChanged: (T){
+                      print(T);
+                      setState(() {
+                        rad = T;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Text("ไม่มี",style: TextStyle(color: Colors.black),),
+                )
+              ],
+            ),
+          ),
           Container(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(

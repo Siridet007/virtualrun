@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:app/config/config.dart';
 import 'package:app/run/km.dart';
+import 'package:app/run/oldrun.dart';
 import 'package:app/system/SystemInstance.dart';
 import 'package:app/ui/rundata/datarunner.dart';
 import 'package:app/ui/running.dart';
 import 'package:app/util/file_util.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -23,7 +25,7 @@ class _RunnerState extends State<Runner> {
   final _date = new DateTime.now();
 
   List<DataRun> dataRuns = List();
-  final List<String> _list = List<String>.generate(20, (index) => "Item: ${++index}");
+  List _list = [];
   List _lst = List();
   var id;
   var isType;
@@ -34,6 +36,8 @@ class _RunnerState extends State<Runner> {
   List<DataRunner> _listKm = List();
   SystemInstance _instance = SystemInstance();
   bool _isLoading = true;
+  List status = [];
+  var aaId;
 
   @override
   void initState(){
@@ -42,6 +46,7 @@ class _RunnerState extends State<Runner> {
     print(id);
     print(_systemInstance.token);
     _getData();
+    checkId();
     super.initState();
   }
 
@@ -55,7 +60,7 @@ class _RunnerState extends State<Runner> {
       // print(_data);
       // print(sum);
       for (var i in sum) {
-        print(i);
+        // print(i);
         DataRun run = DataRun(
           i["id"],
           i["nameAll"],
@@ -93,6 +98,74 @@ class _RunnerState extends State<Runner> {
       ],
     )
   );
+  Future showCustomDialogNotRun(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('ท่านยังไม่ได้รับการอนุมัติ'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      )
+  );
+
+  Future checkStatus ()async{
+    Map<String, String> header = {
+      "Authorization": "Bearer ${_systemInstance.token}"
+    };
+    var data = await http.post('${Config.API_URL}/test_run/check_status?id=$aaId&userId=$id',headers: header );
+    var _data = jsonDecode(data.body);
+    print(_data);
+    var sum = _data['status'];
+    print("_data ${sum.runtimeType}");
+    print(sum);
+    if(sum == 0){
+      showCustomDialogNotRun(context);
+    }else if(sum == 1){
+      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      KilometerScreen(id: aaId,type:isType,km:distance,dateS: dateS,dateE: dateE,)));
+
+      }
+    setState(() {});
+    print("myrun $status");
+    return status;
+  }
+
+  Future checkId() async {
+      Map<String, String> header = {
+        "Authorization": "Bearer ${_systemInstance.token}"
+      };
+      var data = await http.post(
+          '${Config.API_URL}/ranking/show?UserId=$id',
+          headers: header);
+      var _data = jsonDecode(data.body);
+      // print(data);
+      var sum = _data['data'];
+      // print("_data $sum");
+      for (var i in sum) {
+        var ggg = i['id'];
+        // MyRunner myRunner = MyRunner(
+        //     i['rid'],
+        //     i['userId'],
+        //     i['id'],
+        //     i['size'],
+        //     i['createDate'],
+        //     i['status'],
+        //     i['imgSlip'],
+        //   i['isRegister']
+        // );
+        print("ggg$ggg");
+        _list.add(ggg);
+      }
+    setState(() {});
+    // print("myrun $_list");
+    return _list;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +185,14 @@ class _RunnerState extends State<Runner> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.history),
+              onPressed: (){
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OldRunScreen()));
+              }),
+        ],
       ),
       body: Container(
         child: _isLoading ? Center(
@@ -126,26 +207,23 @@ class _RunnerState extends State<Runner> {
         ): ListView.builder(
             itemCount: dataRuns.length,
             itemBuilder: (BuildContext context, int index){
-              print('data');
-              return Container(
+              // print('data');
+              // print(dataRuns[index].id);
+              // print(_list.contains(dataRuns[index].id));
+              return _list.contains(dataRuns[index].id) == true ? Padding(padding: EdgeInsets.zero): Container(
                 margin:EdgeInsets.all(8.0),
                 child: Card(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
                   child: InkWell(
                     onTap: () {
-                      int aaId = dataRuns[index].id;
-                      print("allRunId = $aaId");
+                      aaId = dataRuns[index].id;
+                      // print("allRunId = $aaId");
                       distance = dataRuns[index].distance;
                       isType = dataRuns[index].type;
                       dateS = dataRuns[index].dateStart;
                       dateE = dataRuns[index].dateEnd;
                       print(distance);
-                      Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    KilometerScreen(id: aaId,type:isType,km:distance,dateS: dateS,dateE: dateE,)));
-
+                      checkStatus();
                     },
                     child: Column(
                       children: [

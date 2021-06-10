@@ -227,7 +227,7 @@ class _KilometerScreenState extends State<KilometerScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('km'),
+        title: Text('รายละเอียดการวิ่ง'),
         actions: [
           if(date == false)...[
             IconButton(
