@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:app/gps/location.dart';
+import 'package:draw_graph/draw_graph.dart';
+import 'package:draw_graph/models/feature.dart';
 import 'package:permission/permission.dart';
 import 'package:provider/provider.dart';
 
@@ -62,9 +65,21 @@ class _StartState extends State<StartRun> {
   var allRunId;
   var id;
   var myDate;
+  var myKm;
+  var myTime;
+  var myTotal = "0";
+  List kkk = [];
+  List ttt = [];
   StreamSubscription<LocationData> locationSubscription;
   double _speed = 0.0;
   var mySpeed;
+  List<double> data = [];
+  List<Feature> features =[];
+  List<String> lenx = [];
+  List<String> leny = ['', '', '', '', '',''];
+  var _data;
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -91,6 +106,7 @@ class _StartState extends State<StartRun> {
         _lng = lng;
         _lat = lat;
         calculate();
+
         Map params = Map();
         print("ccc");
         params['lat'] = lat.toString();
@@ -127,6 +143,69 @@ class _StartState extends State<StartRun> {
   //   });
   //   print("_speed $mySpeed");
   // }
+  void calculateSpeed(){
+    print("sss $distanceMessage");
+    print("sss $timer");
+    var km = double.parse(distanceMessage);
+    print("ttt $km");
+    var h = timer.substring(0,2);
+    var m = timer.substring(3,5);
+    var s = timer.substring(6,8);
+    print("sss $h");
+    print("sss $m");
+    print("ttt $s");
+    var hh = int.parse(h);
+    var mm = int.parse(m);
+    var ss = int.parse(s);
+    var htos = hh * 60 * 60;
+    var mtos = mm * 60;
+    var total = htos + mtos + ss;
+    print("total $total");
+    var kmm = km/0.0010000;
+    myKm = kmm;
+    myTime = total;
+    if(total == 0){
+      total = 1;
+    }
+    myTotal = (kmm/total).toStringAsFixed(1);
+    print(kmm);
+    var zxc = double.parse(myTotal);
+    // for(var i=0;i<20;i++){
+    //   var a = i.toDouble();
+    //   data.add(a);
+    // }
+    data.add(zxc);
+    List<String> xx = [];
+    List<String> yy = [];
+    for(var i=0;i<data.length;i++){
+      var x = "";
+      var y = "";
+      xx.add("");
+      print(x);
+      print(y);
+    }
+    lenx = xx;
+    print(data.length);
+    print(lenx.length);
+    print(xx.length);
+    print(leny);
+    // kkk.add(1myKm);
+    // kkk.add(myTime);
+    // ttt.add(myTime);
+    print(myTotal);
+    print(data);
+    // print(ttt);
+    _data = data;
+    features = [
+      Feature(
+        data: data,
+        color: Colors.red,
+      ),
+    ];
+    setState(() {
+      myTotal = myTotal;
+    });
+  }
 
 //-------------------------calculate distance---------------------------------//
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -162,6 +241,7 @@ class _StartState extends State<StartRun> {
                 _listSum[i + 1]["lat"], _listSum[i + 1]["lng"]);
       }
       distanceMessage = totalDistance.toStringAsFixed(2);
+      calculateSpeed();
       // return distanceMessage;
     });
   }
@@ -186,6 +266,7 @@ class _StartState extends State<StartRun> {
   void startstopwatch(){
     setState(() {
       //calculate();
+
       stopbutton = false;
       startbutton = false;
     });
@@ -227,59 +308,109 @@ class _StartState extends State<StartRun> {
         ),
       ),
 
-      body: SingleChildScrollView(
-        child: Container(
+      body: Container(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 50, 0, 20),
-            child: Column(
+            padding: const EdgeInsets.all(10.0),
+            child: ListView(
               children: [
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text('${timer}', textAlign: TextAlign.center,style: TextStyle(fontSize: 50),),
+                SizedBox(
+                  height: 200,
+                  width: 300,
+                  child: LineGraph(
+                    features: features,
+                    size: Size(500, 400),
+                    labelX: lenx,//['', '', '', '', 't'],
+                    labelY: leny,//['', '', '', '', 's'],
+                    showDescription: false,
+                    graphColor: Colors.black,
+                    graphOpacity: 0.2,
+                    verticalFeatureDirection: true,
+                    descriptionHeight: 130,
+                  ),
 
+                ),
+                Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0)),
+                Column(
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text('${timer}', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+
+                        ),
+                        // Expanded(
+                        //   child: Text('${calories}', textAlign: TextAlign.center,style: TextStyle(fontSize: 35),),
+
+                        // ),
+                        Expanded(
+                          child: Text('${distanceMessage}',textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                        ),
+                      ],
                     ),
-                    // Expanded(
-                    //   child: Text('0', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
-                    // ),
-                    // Expanded(
-                    //   //time / distance = pace----------------
-                    //   child: Text("${pace}",textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
-                    // ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text('เวลา', textAlign: TextAlign.center,style: TextStyle(fontSize: 30),),
+
+                        ),
+                        // Expanded(
+                        //   child: Text('แคลอรี่', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+
+                        // ),
+                        Expanded(
+                          child: Text('กิโลเมตร',textAlign: TextAlign.center,style: TextStyle(fontSize: 30),),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text('เวลา', textAlign: TextAlign.center,style: TextStyle(fontSize: 30),),
-
-                    ),
-                    // Expanded(
-                    //   child: Text('ครั้งต่อนาที', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                    // ),
-                    // Expanded(
-                    //   child: Text('เพซ',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                    // ),
-                  ],
-                ),
+                // Row(
+                //   children: <Widget>[
+                //     Expanded(
+                //       child: Text('${timer}', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                //
+                //     ),
+                //     // Expanded(
+                //     //   child: Text('0', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                //     // ),
+                //     // Expanded(
+                //     //   //time / distance = pace----------------
+                //     //   child: Text("${pace}",textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                //     // ),
+                //   ],
+                // ),
+                // Row(
+                //   children: <Widget>[
+                //     Expanded(
+                //       child: Text('เวลา', textAlign: TextAlign.center,style: TextStyle(fontSize: 30),),
+                //
+                //     ),
+                //     // Expanded(
+                //     //   child: Text('ครั้งต่อนาที', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                //     // ),
+                //     // Expanded(
+                //     //   child: Text('เพซ',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                //     // ),
+                //   ],
+                // ),
+                // Column(
+                //   children: [
+                //     Padding(
+                //       padding: EdgeInsets.only(top: 30),
+                //     ),
+                //
+                //     Text('${distanceMessage}',style: TextStyle(fontSize: 40),),
+                //     Text('กิโลเมตร',style: TextStyle(fontSize: 30),),
+                //   ],
+                // ),
                 Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 50),
+                      padding: EdgeInsets.only(top: 30),
                     ),
 
-                    Text('${distanceMessage}',style: TextStyle(fontSize: 50),),
-                    Text('กิโลเมตร',style: TextStyle(fontSize: 30),),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 50),
-                    ),
-
-                    // Text('${mySpeed}',style: TextStyle(fontSize: 50),),
-                    // Text('อัตราเร็ว',style: TextStyle(fontSize: 30),),
+                    Text('${myTotal}',style: TextStyle(fontSize: 40),),
+                    Text('อัตราเร็ว',style: TextStyle(fontSize: 30),),
                   ],
                 ),
                 Padding(
@@ -338,9 +469,10 @@ class _StartState extends State<StartRun> {
                               stopstopwatch();
                               locationSubscription.pause();
                               print("type:${theType}");
+                              print("datata $data");
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => Pause(kmData: distanceMessage,timeData: timer,myType: theType,id: allRunId,)));
+                                  MaterialPageRoute(builder: (context) => Pause(kmData: distanceMessage,timeData: timer,myType: theType,id: allRunId,speed: myTotal,myData: data,lengx: lenx,lengy: leny,)));
                             },
                           ),
                         ),
@@ -354,7 +486,43 @@ class _StartState extends State<StartRun> {
             ),
           ),
         ),
+    );
+  }
+
+  Widget _line(){
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 64.0),
+            child: Text(
+              "อัตราเร็ว",
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
+          LineGraph(
+            features: features,
+            size: Size(320, 400),
+            labelX: ['', '', '', '', 't'],
+            labelY: ['', '', '', '', 's'],
+            showDescription: true,
+            graphColor: Colors.black,
+            graphOpacity: 0.2,
+            verticalFeatureDirection: true,
+            descriptionHeight: 130,
+          ),
+          SizedBox(
+            height: 50,
+          )
+        ],
       ),
     );
   }
+
 }

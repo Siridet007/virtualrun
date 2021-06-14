@@ -1,4 +1,5 @@
 import 'package:app/system/SystemInstance.dart';
+import 'package:app/test/chart.dart';
 import 'package:app/ui/news.dart';
 import 'package:app/ui/ranking.dart';
 import 'package:app/ui/runner.dart';
@@ -36,6 +37,7 @@ class _LauncherState extends State<Launcher> {
     //Running(),
     //LocationScreen(),
     Runner(),
+    // ChartScreen(),
     //MapSample(),
     //Tracking(),
     ProFile(),

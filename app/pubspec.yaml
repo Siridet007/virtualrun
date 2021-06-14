@@ -54,6 +54,11 @@ dependencies:
   firebase_messaging: ^7.0.3
   firebase_core:
   overlay_support:
+  charts_flutter:
+  syncfusion_flutter_charts:
+  line_chart:
+  fl_chart:
+  draw_graph:
 
 
 

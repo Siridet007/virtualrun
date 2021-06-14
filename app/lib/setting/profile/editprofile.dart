@@ -29,6 +29,7 @@ class _EditScreenState extends State<EditScreen> {
   TextEditingController tel = TextEditingController();
   final picker = ImagePicker();
   var pickedFile;
+  var allow;
 
   Future getImage() async{
     pickedFile = await picker.getImage(
@@ -75,6 +76,7 @@ class _EditScreenState extends State<EditScreen> {
       passWord = i['passWord'];
       userName = i['userName'];
       au = i['au'];
+      allow = i['autho'];
       // myName = i['name'];
       // myTel = ['tel'];
       // myImg = ['imgProfile'];
@@ -170,6 +172,7 @@ class _EditScreenState extends State<EditScreen> {
     params['name'] = isName.toString();
     params['tel'] = isTel.toString();
     params['au'] = au.toString();
+    params['autho'] = allow.toString();
     params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(), filename: "filename.png");
     par['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(), filename: "filename.png");
     FormData formData = FormData.fromMap(params);

@@ -38,6 +38,8 @@ class _RunnerState extends State<Runner> {
   bool _isLoading = true;
   List status = [];
   var aaId;
+  var date2s;
+  var s2date;
 
   @override
   void initState(){
@@ -51,6 +53,9 @@ class _RunnerState extends State<Runner> {
   }
 
   Future _getData()async{
+
+    date2s = ('${_date.day}/${_date.month}/${_date.year}');
+    s2date = new DateFormat('d/M/yyyy').parse(date2s);
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
     var data = await http.post('${Config.API_URL}/test_run/test_show?userId=${id}',headers: header );
     if(data.statusCode == 200) {
@@ -71,7 +76,18 @@ class _RunnerState extends State<Runner> {
           i["imgAll"],
         );
         // print("sada: ${run}");
-        dataRuns.add(run);
+        var dd = i['dateStart'];
+        var ddd = new DateFormat('d/M/yyyy').parse(dd);
+        print("ddd $ddd");
+        var ss = i['dateEnd'];
+        var sss = new DateFormat('d/M/yyyy').parse(ss);
+        print("sss $sss");
+        if(s2date.isAfter(sss) ){
+
+        }else{
+          dataRuns.add(run);
+        }
+
       }
       // print("Run: ${dataRuns}");
       setState(() {

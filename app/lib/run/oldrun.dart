@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 
+import 'km.dart';
+
 class OldRunScreen extends StatefulWidget {
   const OldRunScreen({Key key}) : super(key: key);
 
@@ -158,11 +160,11 @@ class _OldRunScreenState extends State<OldRunScreen> {
                       dateS = dataRuns[index].dateStart;
                       dateE = dataRuns[index].dateEnd;
                       print(distance);
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (BuildContext context) =>
-                      //             KilometerScreen(id: aaId,type:isType,km:distance,dateS: dateS,dateE: dateE,)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  KilometerScreen(id: aaId,type:isType,km:distance,dateS: dateS,dateE: dateE,)));
 
                     },
                     child: Column(

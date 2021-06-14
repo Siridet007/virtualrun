@@ -10,6 +10,8 @@ import 'package:app/system/SystemInstance.dart';
 import 'package:app/ui/rundata/datarunner.dart';
 import 'package:app/ui/running.dart';
 import 'package:app/util/file_util.dart';
+import 'package:draw_graph/draw_graph.dart';
+import 'package:draw_graph/models/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart'as http;
@@ -21,8 +23,10 @@ class Pause extends StatefulWidget {
   final String myType;
   final int id;
   final String speed;
-
-  const Pause({Key key, this.kmData, this.timeData,this.myType,this.id,this.speed}) : super(key: key);
+  final List myData;
+  final List lengx;
+  final List lengy;
+  const Pause({Key key, this.kmData, this.timeData,this.myType,this.id,this.speed,this.myData,this.lengx,this.lengy}) : super(key: key);
   @override
   _PauseState createState() => _PauseState();
 }
@@ -76,12 +80,25 @@ class _PauseState extends State<Pause> {
   var pace;
   var tall;
   var mySpeed;
-
+  var _data;
+  List<double> data = [];
+  List<Feature> features =[];
+  List<String> lenx = [];
+  List<String> leny = [];
 
   @override
   void initState(){
     print(theKm);
     allRunId = widget.id;
+    data = widget.myData;
+    lenx = widget.lengx;
+    leny = widget.lengy;
+    features = [
+      Feature(
+        data: data,
+        color: Colors.red,
+      ),
+    ];
     SystemInstance systemInstance = SystemInstance();
     myId = systemInstance.userId;
     _fileUtil.readFile().then((value){
@@ -96,6 +113,9 @@ class _PauseState extends State<Pause> {
     getImg();
     getAllName();
     getName();
+    setState(() {
+
+    });
     // saveSuccess();
   }
 
@@ -159,6 +179,8 @@ class _PauseState extends State<Pause> {
       var dee = de.substring(0,7);
       var deee = "0$dee";
       sum = deee;
+
+
 
     }
     print("sum$sum");
@@ -237,6 +259,7 @@ class _PauseState extends State<Pause> {
       distanceMessage = totalDistance.toStringAsFixed(2);
       setState(() {
       });
+
       return distanceMessage;
     });
 
@@ -469,6 +492,9 @@ class _PauseState extends State<Pause> {
     theKm = widget.kmData;
     theTime = widget.timeData;
     theType = widget.myType;
+    mySpeed = widget.speed;
+
+    print("datatata $data");
     print("tpe:${theType}");
     calculateCals();
     calculatePace();
@@ -492,19 +518,30 @@ class _PauseState extends State<Pause> {
           child: ListView(
             children: <Widget>[
               SizedBox(
-                height: 380,
+                height: 250,
                 width: 300,
-                child: GoogleMap(
-                  myLocationEnabled: true,
-                  mapType: MapType.normal,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(16.4329112, 102.823361),
-                    zoom: 16,
-                  ),
-
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
+                // child: GoogleMap(
+                //   myLocationEnabled: true,
+                //   mapType: MapType.normal,
+                //   initialCameraPosition: CameraPosition(
+                //     target: LatLng(16.4329112, 102.823361),
+                //     zoom: 16,
+                //   ),
+                //
+                //   onMapCreated: (GoogleMapController controller) {
+                //     _controller.complete(controller);
+                //   },
+                // ),
+                child: LineGraph(
+                  features: features,
+                  size: Size(500, 400),
+                  labelX: lenx,//['', '', '', '', '', '', '', '','', '', '', '','', '', '', '','', '', '', '','', '', '', '','', '', '', '','t'],//lenx,
+                  labelY: ['', '', '', '','', '', '', '','', '', '', '','', '', '', '','', '', '', '','', '', '', '','', '', '', '',],//leny,
+                  showDescription: false,
+                  graphColor: Colors.black,
+                  graphOpacity: 0.2,
+                  verticalFeatureDirection: true,
+                  descriptionHeight: 130,
                 ),
 
               ),
@@ -517,7 +554,7 @@ class _PauseState extends State<Pause> {
                      Row(
                        children: <Widget>[
                          Expanded(
-                           child: Text('${theKm}', textAlign: TextAlign.center,style: TextStyle(fontSize: 35),),
+                           child: Text('${theKm}', textAlign: TextAlign.center,style: TextStyle(fontSize: 28),),
 
                          ),
                          // Expanded(
@@ -551,10 +588,13 @@ class _PauseState extends State<Pause> {
                        children: <Widget>[
 
                          Expanded(
-                           child: Text('$calories', textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                           child: Text('$calories', textAlign: TextAlign.center,style: TextStyle(fontSize: 28),),
                          ),
                          Expanded(
-                           child: Text('$pace',textAlign: TextAlign.center,style: TextStyle(fontSize: 40),),
+                           child: Text('$pace',textAlign: TextAlign.center,style: TextStyle(fontSize: 28),),
+                         ),
+                         Expanded(
+                           child: Text('$mySpeed',textAlign: TextAlign.center,style: TextStyle(fontSize: 28),),
                          ),
                        ],
                      ),
@@ -567,9 +607,9 @@ class _PauseState extends State<Pause> {
                          Expanded(
                            child: Text('เพซ', textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
                          ),
-                         // Expanded(
-                         //   child: Text('ครั้งต่อนาที',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                         // ),
+                         Expanded(
+                           child: Text('อัตราเร็ว',textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
+                         ),
                        ],
                      ),
                      Divider(

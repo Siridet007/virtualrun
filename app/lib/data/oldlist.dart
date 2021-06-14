@@ -166,6 +166,18 @@ class _OldListScreenState extends State<OldListScreen> {
     });
     return runs;
   }
+  Future showCustomDialog(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('หมดเวลาให้สมัครแล้ว'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      )
+  );
   @override
   void initState() {
     _fileUtil.readFile().then((id){
@@ -243,6 +255,7 @@ class _OldListScreenState extends State<OldListScreen> {
                           print(type);
                           print(dates);
                           print(datee);
+                          showCustomDialog(context);
                           // if(stat == "Admin"){
                           //   Navigator.push(context,
                           //       MaterialPageRoute(
