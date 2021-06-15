@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/config/config.dart';
+import 'package:app/data/inac.dart';
 import 'package:app/data/infodata.dart';
 import 'package:app/system/SystemInstance.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -22,6 +23,8 @@ class EditDataScreen extends StatefulWidget {
   final String img;
   final String acces;
   final String price;
+  final String active;
+
 
   const EditDataScreen(
       {Key key,
@@ -33,7 +36,7 @@ class EditDataScreen extends StatefulWidget {
       this.dateE,
       this.img,
         this.acces,
-      this.price})
+      this.price,this.active})
       : super(key: key);
 
   @override
@@ -68,6 +71,8 @@ class _EditDataScreenState extends State<EditDataScreen> {
   bool canDelete = false;
   int rad;
   var accc;
+  TextEditingController access = TextEditingController();
+  var active;
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picker = await showDatePicker(
@@ -258,13 +263,14 @@ class _EditDataScreenState extends State<EditDataScreen> {
       print("$accessories");
     }
     if(rad == 0){
-      aa = "shirt";
+      aa = "เสื้อ";
     }else if(rad == 1){
-      aa = "hat";
-    }else if(rad == 2){
-      aa = "bag";
+      aa = "ไม่มี";
     }else{
-      aa = "non";
+      aa = access.text;
+      if(access.text.isEmpty){
+        aa = myAccess;
+      }
     }
     Dio dio = Dio();
     Map<String, dynamic> params = Map();
@@ -276,6 +282,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
     params["dateEnd"] = myEndDate;
     params["userId"] = userId.toString();
     params["accessories"] = aa.toString();
+    params["active"] = active.toString();
     params["price"] = isPrice.toString();
     params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(),
         filename: "filename.png");
@@ -328,6 +335,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
     imgAll = widget.img;
     myAccess = widget.acces;
     myPrice = widget.price;
+    active = widget.active;
     print(myName);
     print(kmDrop);
     print(dropdown);
@@ -335,18 +343,15 @@ class _EditDataScreenState extends State<EditDataScreen> {
     print(myEndDate);
     print(imgAll);
     print(myAccess);
-    if(myAccess == "shirt"){
+    if(myAccess == "เสื้อ"){
       accc = "เสื้อ";
       rad = 0;
-    }else if(myAccess == "hat"){
-      accc = "หมวก";
-      rad = 1;
-    }else if(myAccess == "bag"){
-      accc = "ถุงผ้า";
-      rad = 2;
-    }else{
+    }else if(myAccess == "ไม่มี"){
       accc = "ไม่มี";
-      rad = 3;
+      rad = 1;
+    }else{
+      accc = "อื่นๆ";
+      rad = 2;
     }
     aid = widget.aaid;
     print("aid $aid");
@@ -372,6 +377,16 @@ class _EditDataScreenState extends State<EditDataScreen> {
               }
 
 
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.assignment_turned_in),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => InActiveScreen(aaid: aid,name: myName,type: dropdown,km: kmDrop,dateS: myDate,dateE: myEndDate,acces: myAccess,price: myPrice,active: active,img: imgAll,userId: userId,
+                      )));
             },
           )
         ],
@@ -518,7 +533,7 @@ class _EditDataScreenState extends State<EditDataScreen> {
                   ),
                 ),
                 Expanded(
-                  child: Text("หมวก",style: TextStyle(color: Colors.black),),
+                  child: Text("ไม่มี",style: TextStyle(color: Colors.black),),
                 ),
                 Expanded(
                   child: Radio(
@@ -533,26 +548,23 @@ class _EditDataScreenState extends State<EditDataScreen> {
                   ),
                 ),
                 Expanded(
-                  child: Text("ถุงผ้า",style: TextStyle(color: Colors.black),),
+                  child: Text("อื่นๆ",style: TextStyle(color: Colors.black),),
                 ),
-                Expanded(
-                  child: Radio(
-                    value: 3,
-                    groupValue: rad,
-                    onChanged: (T){
-                      print(T);
-                      setState(() {
-                        rad = T;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: Text("ไม่มี",style: TextStyle(color: Colors.black),),
-                )
               ],
             ),
           ),
+          rad == 2 ? Container(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: TextField(
+              controller: access,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: '$myAccess',
+                // hintText: '*0 = ไม่มีค่าสมัคร'
+              ),
+            ),
+          ):Padding(padding: EdgeInsets.zero),
+
           Container(
             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
             child: Text(

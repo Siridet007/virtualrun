@@ -18,8 +18,9 @@ class KilometerScreen extends StatefulWidget {
   final String km;
   final String dateS;
   final String dateE;
+  final String active;
 
-  const KilometerScreen({Key key, this.id,this.type,this.km,this.dateS,this.dateE}) : super(key: key);
+  const KilometerScreen({Key key, this.id,this.type,this.km,this.dateS,this.dateE,this.active}) : super(key: key);
   @override
   _KilometerScreenState createState() => _KilometerScreenState();
 }
@@ -51,6 +52,7 @@ class _KilometerScreenState extends State<KilometerScreen> {
   bool _isLoading = true;
   List<DataRun> dataRuns = [];
   bool date = false;
+  var active;
 
   void initState(){
     SystemInstance systemInstance = SystemInstance();
@@ -59,6 +61,7 @@ class _KilometerScreenState extends State<KilometerScreen> {
     aid = widget.id;
     myDateS = widget.dateS;
     myDateE = widget.dateE;
+    active = widget.active;
     print("aid$aid");
     _getDataDate();
     _getNewData();
@@ -217,6 +220,18 @@ class _KilometerScreenState extends State<KilometerScreen> {
         ],
       )
   );
+  Future showCustomDialogNo(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('ปิดชั่วคราว'),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('ปิด'),
+          )
+        ],
+      )
+  );
 
 
   @override
@@ -229,46 +244,56 @@ class _KilometerScreenState extends State<KilometerScreen> {
         centerTitle: true,
         title: Text('รายละเอียดการวิ่ง'),
         actions: [
-          if(date == false)...[
-            IconButton(
+          if(active == "yes")...[
+            if(date == false)...[
+              IconButton(
+                  icon: Icon(Icons.forward),
+                  onPressed: (){
+                    showCustomDialogDate(context);
+                  }
+              ),
+            ]else...[
+              _list.isEmpty ?
+              IconButton(
                 icon: Icon(Icons.forward),
                 onPressed: (){
-                  showCustomDialogDate(context);
-                }
-            ),
-      ]else...[
-            _list.isEmpty ?
-            IconButton(
-              icon: Icon(Icons.forward),
-              onPressed: (){
-                print("วิ่งใหม่");
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            Running(isType:theType,idrunner: aid,)));
-              },
-            ):IconButton(
-              icon: Icon(Icons.forward),
-              onPressed: (){
-                var theDis = double.parse(distance);
-                var myKm = double.parse(myKmm);
-                // myKm = 5;
-                print("the$theDis");
-                print("my$myKm");
-                if(myKm < theDis){
-                  print("วิ่งต่อ");
+                  print("วิ่งใหม่");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              Running(idrunner: aid,isType:theType)));
-                }else{
-                  showCustomDialog(context);
+                              Running(isType:theType,idrunner: aid,)));
+                },
+              ):IconButton(
+                icon: Icon(Icons.forward),
+                onPressed: (){
+                  var theDis = double.parse(distance);
+                  var myKm = double.parse(myKmm);
+                  // myKm = 5;
+                  print("the$theDis");
+                  print("my$myKm");
+                  if(myKm < theDis){
+                    print("วิ่งต่อ");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                Running(idrunner: aid,isType:theType)));
+                  }else{
+                    showCustomDialog(context);
+                  }
+                },
+              ),
+            ]
+          ]else...[
+            IconButton(
+                icon: Icon(Icons.forward),
+                onPressed: (){
+                  showCustomDialogNo(context);
                 }
-              },
             ),
           ]
+
 
           ],
 

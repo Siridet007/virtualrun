@@ -40,6 +40,7 @@ class _RunnerState extends State<Runner> {
   var aaId;
   var date2s;
   var s2date;
+  var active;
 
   @override
   void initState(){
@@ -57,10 +58,11 @@ class _RunnerState extends State<Runner> {
     date2s = ('${_date.day}/${_date.month}/${_date.year}');
     s2date = new DateFormat('d/M/yyyy').parse(date2s);
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-    var data = await http.post('${Config.API_URL}/test_run/test_show?userId=${id}',headers: header );
-    if(data.statusCode == 200) {
+    var res = await http.post('${Config.API_URL}/test_run/test_show?userId=${id}',headers: header );
+    var data = utf8.decode(res.bodyBytes);
+    if(res.statusCode == 200) {
       _isLoading = false;
-      var _data = jsonDecode(data.body);
+      var _data = jsonDecode(data);
       var sum = _data['data'];
       // print(_data);
       // print(sum);
@@ -76,18 +78,18 @@ class _RunnerState extends State<Runner> {
           i["imgAll"],
         );
         // print("sada: ${run}");
-        var dd = i['dateStart'];
-        var ddd = new DateFormat('d/M/yyyy').parse(dd);
-        print("ddd $ddd");
-        var ss = i['dateEnd'];
-        var sss = new DateFormat('d/M/yyyy').parse(ss);
-        print("sss $sss");
-        if(s2date.isAfter(sss) ){
+        active = i['active'];
+          var dd = i['dateStart'];
+          var ddd = new DateFormat('d/M/yyyy').parse(dd);
+          print("ddd $ddd");
+          var ss = i['dateEnd'];
+          var sss = new DateFormat('d/M/yyyy').parse(ss);
+          print("sss $sss");
+          if(s2date.isAfter(sss) ){
 
-        }else{
-          dataRuns.add(run);
-        }
-
+          }else{
+            dataRuns.add(run);
+          }
       }
       // print("Run: ${dataRuns}");
       setState(() {
@@ -144,7 +146,7 @@ class _RunnerState extends State<Runner> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      KilometerScreen(id: aaId,type:isType,km:distance,dateS: dateS,dateE: dateE,)));
+                      KilometerScreen(id: aaId,type:isType,km:distance,dateS: dateS,dateE: dateE,active:active,)));
 
       }
     setState(() {});

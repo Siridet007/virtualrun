@@ -75,6 +75,7 @@ class _Tournament extends State<Tournament> {
   final _date = new DateTime.now();
   var date2s;
   var s2date;
+  var active;
 
   ScrollController _scrollController;
 
@@ -102,12 +103,13 @@ class _Tournament extends State<Tournament> {
       Map<String, String> header = {
         "Authorization": "Bearer ${_systemInstance.token}"
       };
-      var data = await http.post(
+      var res = await http.post(
           '${Config.API_URL}/test_all/show_all?userId=$userId',
           headers: header);
-      if (data.statusCode == 200) {
+      var data = utf8.decode(res.bodyBytes);
+      if (res.statusCode == 200) {
         _isLoading = false;
-        var _data = jsonDecode(data.body);
+        var _data = jsonDecode(data);
         print(_data);
         for (var i in _data) {
           AllRunner allRunner = AllRunner(
@@ -121,6 +123,7 @@ class _Tournament extends State<Tournament> {
               i['imgAll'],
               i['price'],
               i['accessories'],
+              i['active'],
               i['createDate']);
           // alls.add(allRunner);
 
@@ -134,11 +137,12 @@ class _Tournament extends State<Tournament> {
       Map<String, String> header = {
         "Authorization": "Bearer ${_systemInstance.token}"
       };
-      var data =
+      var res =
           await http.post('${Config.API_URL}/test_all/load', headers: header);
-      if (data.statusCode == 200) {
+      var data = utf8.decode(res.bodyBytes);
+      if (res.statusCode == 200) {
         _isLoading = false;
-        var _data = jsonDecode(data.body);
+        var _data = jsonDecode(data);
         print(_data);
         var sum = _data['data'];
         for (var i in sum) {
@@ -153,19 +157,36 @@ class _Tournament extends State<Tournament> {
               i['imgAll'],
               i['price'],
               i['accessories'],
+              i['active'],
               i['createDate']);
           // alls.add(allRunner);
-          var dd = i['dateStart'];
-          var ddd = new DateFormat('d/M/yyyy').parse(dd);
-          print("ddd $ddd");
-          var ss = i['dateEnd'];
-          var sss = new DateFormat('d/M/yyyy').parse(ss);
-          print("sss $sss");
-          if(s2date.isAtSameMomentAs(ddd) && s2date.isBefore(ddd) || s2date.isAfter(sss) ){
+          var aa = i['active'];
+          if(aa == 'yes'){
+            var dd = i['dateStart'];
+            var ddd = new DateFormat('d/M/yyyy').parse(dd);
+            print("ddd $ddd");
+            var ss = i['dateEnd'];
+            var sss = new DateFormat('d/M/yyyy').parse(ss);
+            print("sss $sss");
+            if(s2date.isAfter(sss) ){
 
+            }else{
+              myList.add(allRunner);
+            }
           }else{
-            myList.add(allRunner);
+
           }
+          // var dd = i['dateStart'];
+          // var ddd = new DateFormat('d/M/yyyy').parse(dd);
+          // print("ddd $ddd");
+          // var ss = i['dateEnd'];
+          // var sss = new DateFormat('d/M/yyyy').parse(ss);
+          // print("sss $sss");
+          // if(s2date.isAtSameMomentAs(ddd) && s2date.isBefore(ddd) || s2date.isAfter(sss) ){
+          //
+          // }else{
+          //   myList.add(allRunner);
+          // }
                   }
       } else {
         _isLoading = false;
@@ -389,6 +410,7 @@ class _Tournament extends State<Tournament> {
                     datee: datee,
                     price: price,
                 access: accessories,
+                active: active,
                   )));
     } else {
       showCustomDialogFailed(context);
@@ -516,6 +538,7 @@ class _Tournament extends State<Tournament> {
                     dateS: dates,
                     img: img,
                     price: price,
+                active: active,
                   )));
     } else {
       showCustomDialogEditFailed(context);
@@ -757,6 +780,7 @@ class _Tournament extends State<Tournament> {
                                 img = myList[index].imgAll;
                                 price = myList[index].price;
                                 accessories = myList[index].accessories;
+                                active = myList[index].active;
                                 print(aaid);
                                 print(nameAll);
                                 print(dis);
@@ -778,6 +802,7 @@ class _Tournament extends State<Tournament> {
                                                 img: img,
                                                 acces: accessories,
                                                 price: price,
+                                                active: active,
                                               )));
                                 } else {
                                   checker();
@@ -812,7 +837,7 @@ class _Tournament extends State<Tournament> {
                                   ),
                                   ListTile(
                                     title: Text("รายการ " +
-                                        myList[index].nameAll +
+                                        myList[index].nameAll.toString() +
                                         " ระยะทาง " +
                                         myList[index].distance +
                                         " กม. (ค่าสมัคร  " +
@@ -1233,10 +1258,11 @@ class AllRunner {
   final String imgAll;
   final String price;
   final String accessories;
+  final String active;
   final String createDate;
 
   AllRunner(this.id, this.userId, this.nameAll, this.distance, this.type,
-      this.dateStart, this.dateEnd, this.imgAll, this.price, this.accessories,this.createDate);
+      this.dateStart, this.dateEnd, this.imgAll, this.price, this.accessories,this.active,this.createDate);
 }
 
 class MyRunner {

@@ -21,8 +21,9 @@ class RegisterRun extends StatefulWidget {
   final String datee;
   final String price;
   final String access;
+  final String active;
 
-  const RegisterRun({Key key, this.aaid, this.name, this.dis, this.dates, this.datee,this.price,this.access}) : super(key: key);
+  const RegisterRun({Key key, this.aaid, this.name, this.dis, this.dates, this.datee,this.price,this.active,this.access}) : super(key: key);
 
 
 
@@ -56,6 +57,7 @@ class _RegisterRun extends State<RegisterRun> {
   var access;
   var state;
   var accc;
+  var active;
 
   @override
   void initState(){
@@ -64,6 +66,7 @@ class _RegisterRun extends State<RegisterRun> {
 //    aid = systemInstance.aid.toString();
     userId = systemInstance.userId.toString();
     userName = systemInstance.userName;
+    active = widget.active;
     // _fileUtil.readFile().then((aid){
     //   this._aid = aid;
     //   print('aid save ${_aid}');
@@ -119,13 +122,15 @@ class _RegisterRun extends State<RegisterRun> {
       fff = "non";
       size = "";
     }
+    print(fff);
     if(price == '0'){
       Map params = Map();
       params['id'] = aID.toString();
       params['userId'] = userId.toString();
       params['size'] = size;
       params['status'] = status.toString();
-      params['accessories'] = fff.toString();
+      params['accessories'] = access.toString();
+      params['active'] = active.toString();
       Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
       http.post('${Config.API_URL}/test_run/save_run',headers: header,body: params).then((res){
         Map resMap = jsonDecode(res.body) as Map;
@@ -147,6 +152,7 @@ class _RegisterRun extends State<RegisterRun> {
     params['size'] = size;
     params['status'] = status.toString();
     params['accessories'] = fff.toString();
+    params['active'] = active.toString();
     params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(), filename: "filename.png");
     FormData formData = FormData.fromMap(params);
     dio.options.headers["Authorization"] = "Bearer ${_systemInstance.token}";
@@ -283,7 +289,7 @@ class _RegisterRun extends State<RegisterRun> {
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-                      child: Text('$accc',style: TextStyle(color: Colors.black),),
+                      child: Text('$access',style: TextStyle(color: Colors.black),),
                     )
                   ],
                 ),

@@ -47,6 +47,7 @@ class _AddTournament extends State<AddTournament> {
   Dialog dialog = new Dialog();
   FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   int rad;
+  TextEditingController access = TextEditingController();
   // defaultImage() async {
   //   _f = await getImageFileFromAssets('NoImage.png');
   // }
@@ -92,17 +93,18 @@ class _AddTournament extends State<AddTournament> {
 
   void add() {
     var aa;
+    var aaa = 'yes';
     if(accessories == "เสื้อ"){
       print("$accessories");
     }
     if(rad == 0){
-      aa = "shirt";
+      aa = "เสื้อ";
     }else if(rad == 1){
-      aa = "hat";
+      aa = "ไม่มี";
     }else if(rad == 2){
-      aa = "bag";
+      aa = access.text;
     }else{
-      aa = "non";
+
     }
     print(userId);
     Dio dio = Dio();
@@ -114,6 +116,7 @@ class _AddTournament extends State<AddTournament> {
     params["dateEnd"] = myEndDate;
     params["userId"] = userId.toString();
     params["accessories"] = aa.toString();
+    params["active"] = aaa.toString();
     params["price"] = price.text;
     params['fileImg'] = MultipartFile.fromBytes(_image.readAsBytesSync(),
         filename: "filename.png");
@@ -351,7 +354,7 @@ class _AddTournament extends State<AddTournament> {
                         ),
                       ),
                       Expanded(
-                        child: Text("หมวก",style: TextStyle(color: Colors.black),),
+                        child: Text("ไม่มี",style: TextStyle(color: Colors.black),),
                       ),
                       Expanded(
                         child: Radio(
@@ -366,26 +369,23 @@ class _AddTournament extends State<AddTournament> {
                         ),
                       ),
                       Expanded(
-                        child: Text("ถุงผ้า",style: TextStyle(color: Colors.black),),
+                        child: Text("อื่นๆ",style: TextStyle(color: Colors.black),),
                       ),
-                      Expanded(
-                        child: Radio(
-                          value: 3,
-                          groupValue: rad,
-                          onChanged: (T){
-                            print(T);
-                            setState(() {
-                              rad = T;
-                            });
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: Text("ไม่มี",style: TextStyle(color: Colors.black),),
-                      )
+
                     ],
                   ),
                 ),
+                rad == 2 ? Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: access,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'โปรดระบุ',
+                        // hintText: '*0 = ไม่มีค่าสมัคร'
+                    ),
+                  ),
+                ):Padding(padding: EdgeInsets.zero),
                 Container(
                   padding: EdgeInsets.all(10),
                   child: TextField(

@@ -34,13 +34,15 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
   var rid;
   var myTime;
   var access;
+  var active;
 
 
 
   Future getData()async{
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-    var data = await http.post('${Config.API_URL}/test_run/load?id=$aid&userId=$myUserId',headers: header );
-    var _data = jsonDecode(data.body);
+    var res = await http.post('${Config.API_URL}/test_run/load?id=$aid&userId=$myUserId',headers: header );
+    var data = utf8.decode(res.bodyBytes);
+    var _data = jsonDecode(data);
     var sum = _data['data'];
     print(sum);
     for(var i in sum){
@@ -50,6 +52,7 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
       size = i['size'];
       rid = i['rid'];
       access = i['accessories'];
+      active = i['active'];
     }
     var myDate = myTime.toString();
     print("myDate $myDate");
@@ -70,6 +73,7 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
     print(time);
     print(img);
     print(rad);
+    print(access);
   }
   Future getImage() async{
     pickedFile = await picker.getImage(source: ImageSource.gallery,maxHeight: 200.0,maxWidth: 200.0,imageQuality: 50);
@@ -95,6 +99,8 @@ class _InfoUserScreenState extends State<InfoUserScreen> {
     params['size'] = size.toString();
     params['status'] = sta.toString();
     params['imgSlip'] = img.toString();
+    params['accessories'] = access.toString();
+    params['active'] = active.toString();
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
     http.post('${Config.API_URL}/test_run/update_save', body: params,headers: header).then((res) {
       Map resMap = jsonDecode(res.body) as Map;
