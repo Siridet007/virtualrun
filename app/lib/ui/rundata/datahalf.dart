@@ -29,10 +29,11 @@ class _DataHalfState extends State<DataHalf> {
 
   Future get()async{
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-    var data = await http.post('${Config.API_URL}/ranking/show_type?type=Half',headers: header);
-    if(data.statusCode == 200) {
+    var res = await http.post('${Config.API_URL}/ranking/show_type?type=Half',headers: header);
+    var data = utf8.decode(res.bodyBytes);
+    if(res.statusCode == 200) {
       _isLoading = false;
-      var _data = jsonDecode(data.body);
+      var _data = jsonDecode(data);
       var sum = _data['data'];
       print("length: ${sum.length}");
       print("sum: $sum");

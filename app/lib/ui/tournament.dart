@@ -248,10 +248,11 @@ class _Tournament extends State<Tournament> {
     Map<String, String> header = {
       "Authorization": "Bearer ${_systemInstance.token}"
     };
-    var data = await http.post(
+    var res = await http.post(
         '${Config.API_URL}/user_profile/show?userId=$userId',
         headers: header);
-    var _data = jsonDecode(data.body);
+    var data = utf8.decode(res.bodyBytes);
+    var _data = jsonDecode(data);
     print(_data);
     var sum = _data['data'];
     for (var i in sum) {
@@ -283,8 +284,9 @@ class _Tournament extends State<Tournament> {
     print("token $token");
 
     Map<String, String> header = {"Authorization": "Bearer ${_systemInstance.token}"};
-    var data = await http.post('${Config.API_URL}/user_profile/show?userId=$userId',headers: header);
-    var _data = jsonDecode(data.body);
+    var res = await http.post('${Config.API_URL}/user_profile/show?userId=$userId',headers: header);
+    var data = utf8.decode(res.bodyBytes);
+    var _data = jsonDecode(data);
     print(_data);
     var sum = _data['data'];
     for (var i in sum) {
@@ -559,6 +561,7 @@ class _Tournament extends State<Tournament> {
             ],
           ));
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -787,6 +790,7 @@ class _Tournament extends State<Tournament> {
                                 print(type);
                                 print(dates);
                                 print(datee);
+
                                 if (stat == "Admin") {
                                   Navigator.push(
                                       context,
@@ -808,6 +812,7 @@ class _Tournament extends State<Tournament> {
                                   checker();
                                   // Navigator.of(context).pop();
                                 }
+
                                 // Navigator.push(context,
                                 //     MaterialPageRoute(
                                 //         builder: (BuildContext context) =>

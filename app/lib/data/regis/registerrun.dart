@@ -11,6 +11,7 @@ import 'package:app/system/SystemInstance.dart';
 import 'dart:convert';
 import 'package:app/config/config.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RegisterRun extends StatefulWidget {
@@ -58,6 +59,9 @@ class _RegisterRun extends State<RegisterRun> {
   var state;
   var accc;
   var active;
+  final _date = new DateTime.now();
+  var date2s;
+  var s2date;
 
   @override
   void initState(){
@@ -170,6 +174,19 @@ class _RegisterRun extends State<RegisterRun> {
 
     });}
   }
+  Future showCustomDialogDate(BuildContext context) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text('ยังไม่ถึงเวลาสมัคร'),
+        actions: [
+          FlatButton(
+            onPressed: () => {
+              Navigator.of(context).pop(),
+            },
+            child: Text('ปิด'),
+          )
+        ],
+      ));
 
   @override
   Widget build(BuildContext context)  {
@@ -293,7 +310,7 @@ class _RegisterRun extends State<RegisterRun> {
                     )
                   ],
                 ),
-                if(state == 0)...[
+                if(access == "เสื้อ")...[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                     child: DropDownField(
@@ -352,7 +369,15 @@ class _RegisterRun extends State<RegisterRun> {
                       child: Text('ลงทะเบียน'),
                       onPressed: () {
                         // onRegisterRun();
-                        onClick();
+                        date2s = ('${_date.day}/${_date.month}/${_date.year}');
+                        s2date = new DateFormat('d/M/yyyy').parse(date2s);
+                        var ddd = new DateFormat('d/M/yyyy').parse(myDate);
+                        if(s2date.isBefore(ddd) ){
+                           showCustomDialogDate(context);
+                          }else{
+                          onClick();
+                        }
+
                       },
                     )),
               ],
